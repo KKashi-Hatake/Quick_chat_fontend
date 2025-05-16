@@ -12,9 +12,20 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from '../ui/button';
 import Image from 'next/image';
+import { signIn } from 'next-auth/react';
+
 
 
 const LoginModal = () => {
+
+    const handleLogin = () => {
+        signIn('google', {
+            callbackUrl: '/dashboard',
+            redirect: true
+        })
+    }
+
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -24,12 +35,12 @@ const LoginModal = () => {
                 <DialogHeader>
                     <DialogTitle className='text-2xl'>Welcome to Quick Chat</DialogTitle>
                     <DialogDescription>
-                        Quick Chat akes it effortless to create secure chat links and start conversations in seconds.
+                        Quick Chat makes it effortless to create secure chat links and start conversations in seconds.
                     </DialogDescription>
                 </DialogHeader>
-                <Button variant={'outline'}>
+                <Button variant={'outline'} onClick={handleLogin}>
                     <Image
-                        src = '/assests/google.png'
+                        src='/assets/google.png'
                         className='mr-4'
                         width={25}
                         height={25}

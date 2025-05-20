@@ -20,7 +20,7 @@ export default async function Home() {
         {/* Sidebar */}
         <SideBar/>
         {/* Hero Section */}
-        {/* <HeroSection /> */}
+        <HeroSection />
         <div></div>
 
 

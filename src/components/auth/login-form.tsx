@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
+
 
 
 
@@ -29,6 +32,7 @@ export function LoginForm({
     className,
     ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
@@ -37,8 +41,18 @@ export function LoginForm({
         resolver: zodResolver(FormSchema),
     })
 
-    const onSubmit = (data: FormData) => {
+    const onSubmit = async(data: FormData) => {
         console.log("Form Data:", data)
+        const res = await signIn("credentials", {
+            redirect: false,
+            ...data,
+        })
+
+        if (res?.ok) {
+            router.push("/")
+        } else {
+            alert("Login failed")
+        }
         // Handle login logic here
     }
 

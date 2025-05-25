@@ -1,8 +1,8 @@
 import { Account, AuthOptions, ISODateString } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import GoogleProvider from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import axios from 'axios';
-import { LOGIN_URL } from "@/lib/apiEndPoints";
+import { toast } from "sonner";
 
 
 
@@ -26,27 +26,9 @@ export interface CustomUser {
 
 export const authOptions: AuthOptions = {
   pages: {
-    signIn: '/'
+    signIn: '/login'
   },
   callbacks: {
-    async signIn({ user, account }: { user: CustomUser, account: Account | null }) {
-      try {
-        const payload = {
-          email: user?.email,
-          name: user?.name,
-          oauth_id: account?.providerAccountId,
-          provider: account?.provider,
-          image: user?.image
-        }
-        const { data } = await axios.post(LOGIN_URL, payload)
-        user.id = data?.user?.id.toString()
-        user.token = data?.user?.token
-        user.provider = data?.user?.provider
-        return true
-      } catch (error) {
-        return false
-      }
-    },
     async session({ session, user, token }: { session: CustomSession, user: CustomUser, token: JWT }) {
       session.user = token.user as CustomUser
       return session
@@ -59,17 +41,26 @@ export const authOptions: AuthOptions = {
     }
   },
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code"
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        mobile: { label: "Mobile", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const { mobile, password } = credentials || {};
+        console.log(mobile, password);
+        try {
+          const { data } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/signup`, { mobile, password })
+          const { user } = data;
+          toast(data?.message)
+          return user;
+        } catch (error) {
+          console.log("error while logging in ", error)
+          return false;
         }
-      }
-    })
+      },
+    }),
   ]
 
 }

@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 
 
@@ -41,7 +42,7 @@ export function LoginForm({
         resolver: zodResolver(FormSchema),
     })
 
-    const onSubmit = async(data: FormData) => {
+    const onSubmit = async (data: FormData) => {
         console.log("Form Data:", data)
         const res = await signIn("credentials", {
             redirect: false,
@@ -49,9 +50,12 @@ export function LoginForm({
         })
 
         if (res?.ok) {
+            toast('Logged in successfully ;)'); // show backend error as toast
             router.push("/")
+        } else if (res?.error) {
+            toast.error(res.error); // show backend error as toast
         } else {
-            alert("Login failed")
+            toast.error("Unknown error during login");
         }
         // Handle login logic here
     }

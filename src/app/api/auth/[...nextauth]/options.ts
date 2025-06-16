@@ -51,13 +51,12 @@ export const authOptions: AuthOptions = {
         const { mobile, password } = credentials || {};
         console.log(mobile, password);
         try {
-          const { data } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/signup`, { mobile, password })
+          const { data } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`, { mobile, password })
           const { user } = data;
-          toast(data?.message)
           return user;
-        } catch (error) {
-          console.log("error while logging in ", error)
-          return false;
+        } catch (error: any) {
+          const message = error.response?.data?.message || "Something went wrong during login";
+          throw new Error(message);
         }
       },
     }),

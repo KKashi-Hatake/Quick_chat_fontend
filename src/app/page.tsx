@@ -1,36 +1,24 @@
 import FeatureSection from "@/components/base/FeatureSection";
 import Footer from "@/components/base/Footer";
-import HeroSection from "@/components/HeroSection/HeroSection";
+import HeroSectionOnDashboard from "@/components/base/HeroSection";
 import Navbar from "@/components/base/Navbar";
 import UserReviews from "@/components/base/UserReviews";
-import Image from "next/image";
-import { authOptions, CustomSession } from "./api/auth/[...nextauth]/options";
+import ChatArea from "@/components/ChatArea/ChatArea";
 import { getServerSession } from "next-auth";
-import SideBar from "@/components/Sidebar/Sidebar";
+import { authOptions, CustomSession } from "./api/auth/[...nextauth]/options";
 
 export default async function Home() {
-
   const session: CustomSession | null = await getServerSession(authOptions)
-
 
 
   return (
     session?.user ?
-      <div className="w-full h-full grid grid-cols-3 space-x-4 overflow-y-hidden">
-        {/* Sidebar */}
-        <SideBar/>
-        {/* Hero Section */}
-        <HeroSection />
-        <div></div>
-
-
-
-      </div> :
+      <ChatArea user={session?.user}/> :
       <div className="min-h-screen flex flex-col " >
         {/* Header */}
         <Navbar user={session?.user} />
         {/* Hero Section */}
-        <HeroSection />
+        <HeroSectionOnDashboard />
 
         {/* Features Section */}
         <FeatureSection />

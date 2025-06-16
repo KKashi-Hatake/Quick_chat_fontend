@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function HeroSection() {
+export default function HeroSectionOnDashboard() {
   return (
     <section className="flex-1 flex flex-col items-center justify-center text-center p-12 ">
       <h1 className="text-5xl font-extrabold text-gray-900 mb-4">

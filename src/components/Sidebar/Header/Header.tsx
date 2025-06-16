@@ -11,14 +11,14 @@ import {
 
 
 
-const Header = () => {
+const Header = ({ setOpen }: { setOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   return (
     <div className=" h-14 flex justify-between mx-4">
       <p className='h-fit my-auto text-xl font-semibold ml-2 text-blue-500'>Quick Chat</p>
       <div className='w-20 my-auto flex justify-between mr-1'>
-        <div className='h-8 w-8 hover:bg-gray-200 flex justify-center items-center rounded-full'>
+        <div className='h-9 w-9 hover:bg-gray-200 flex justify-center items-center rounded-full cursor-pointer' onClick={() => setOpen(true)}>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-square-plus-icon lucide-message-square-plus"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M12 7v6" /><path d="M9 10h6" /></svg>
         </div>
         <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>

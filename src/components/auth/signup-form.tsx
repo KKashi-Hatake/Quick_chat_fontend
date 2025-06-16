@@ -11,6 +11,8 @@ import { MouseEvent, useEffect, useState } from "react"
 import { toast } from "sonner"
 import axios, { AxiosError } from "axios"
 import { useRouter } from "next/navigation"
+import { StoreType, User } from "../../../types"
+import { useStore } from "@/zustand/store"
 
 
 
@@ -45,6 +47,7 @@ export function SignupForm({
     ...props
 }: React.ComponentPropsWithoutRef<"form">) {
     const router = useRouter();
+    const setUser = useStore((state: StoreType) => state.setUser);
     const [file, setFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [avatar, setAvatar] = useState<{ url: string } | null>(null);
@@ -141,15 +144,16 @@ export function SignupForm({
     const onSubmit = async (payload: SignUpData) => {
         payload.image = avatar?.url;
         try {
-            const { data }: { data: { user: any, success: boolean, message: string } } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/signup`, payload);
-            console.log(data)
+            const { data }: { data: { user: User, success: boolean, message: string } } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/signup`, payload);
             if (data.success) {
                 toast(data?.message)
                 setStatus(`Uploaded`);
                 setFile(null);
                 setPreviewUrl(null);
                 setAvatar(null)
-                router.replace('/login');
+                setUser(data.user);
+                // router.push('/signup/verify-otp')
+                router.push('/login')
             } else {
                 toast(data?.message)
                 setStatus(`Error`);

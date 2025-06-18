@@ -31,11 +31,21 @@ export type User = {
     verificationId: number,
     twoFAId: number | null,
     token: string | null,
+    about?: string
 }
 
 export type StoreType = {
     user: User | null,
     setUser: Function
+}
+
+
+export type searchUserType = {
+    data: {
+        success: boolean,
+        message: string,
+        user: User
+    }
 }
 
 

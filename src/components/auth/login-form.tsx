@@ -43,7 +43,6 @@ export function LoginForm({
     })
 
     const onSubmit = async (data: FormData) => {
-        console.log("Form Data:", data)
         const res = await signIn("credentials", {
             redirect: false,
             ...data,

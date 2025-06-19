@@ -44,7 +44,9 @@ export type searchUserType = {
     data: {
         success: boolean,
         message: string,
-        user: User
+        user: {
+            id: number,
+        }
     }
 }
 

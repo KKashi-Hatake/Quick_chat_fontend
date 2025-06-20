@@ -54,7 +54,7 @@ const MainSideBar = () => {
                     </> :
                         <div className='flex flex-col h-screen'>
                             <NewChat setOpen={setContact} title={"New Contact"} />
-                            <SearchUser />
+                            <SearchUser setOpen={setOpen}/>
                         </div>
                 }
             </motion.div>

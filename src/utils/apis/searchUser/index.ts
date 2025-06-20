@@ -22,6 +22,25 @@ export const searchUser = async (payload: string) => {
     }
 }
 
+export const createConversationPaticipant = async (payload: {
+    id: number,
+    firstName: string,
+    lastName: string,
+}) => {
+    try {
+        const res: any = await api.post(`/api/v1/user/create-conversation-participant`, payload);
+        if (res?.data?.success) {
+            return res?.data?.message;
+        } else {
+            toast(res?.data?.message)
+            return null
+        }
+    } catch (error) {
+        console.log("error while callig search user api", error);
+        return null
+    }
+}
+
 
 
 

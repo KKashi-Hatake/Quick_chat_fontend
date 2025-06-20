@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { searchUser } from '@/utils/apis/searchUser'
+import { createConversationPaticipant, searchUser } from '@/utils/apis/searchUser'
 import { toast } from 'sonner'
-import { User } from '../../../../types'
+import { StoreType, User } from '../../../../types'
 import Image from 'next/image'
+import { useStore } from '@/zustand/store'
 
 
 
@@ -21,20 +22,19 @@ const FormSchema = z.object({
         .regex(/^\d+$/, "Mobile number must contain only digits"),
     first_name: z
         .string()
-        .min(1, "First name must be at least 1 characters")
         .max(50, "First name must be less than 50 characters"),
 
     last_name: z
         .string()
-        .min(1, "Last name must be at least 1 characters")
         .max(50, "Last name must be less than 50 characters")
 })
 
 
 type FormData = z.infer<typeof FormSchema>;
 
-const SearchUser = () => {
-    const [user, setUser] = useState<{ id: number } | null>(null);
+const SearchUser = ({ setOpen }: { setOpen: Dispatch<SetStateAction<boolean>> }) => {
+    const setParticipant = useStore((state: StoreType) => state.setConvParti);
+    const [user, setUser] = useState<number | null>(null);
     const {
         register,
         handleSubmit,
@@ -74,13 +74,29 @@ const SearchUser = () => {
 
 
 
-    const onSubmit = async (data: FormData) => {
-        console.log(user, firstName, lastName);
+    const onSubmit = async () => {
+        if (!user) {
+            return toast("Searched user not found");
+        }
+        const payload = {
+            id: user,
+            firstName,
+            lastName,
+        }
+        try {
+            const convParti = await createConversationPaticipant(payload);
+            console.log(convParti);
+            setParticipant(convParti)
+            setOpen(false);
+        } catch (error) {
+            console.log("Error while create conversation participant", error);
+            toast.error("Something went wrong, Please try again later!");
+        }
     }
 
 
     return (
-        <div className='flex-1 overflow-y-scroll'>
+        <div className='flex-1 overflow-y-scroll scrollbar-hide'>
             <form onSubmit={handleSubmit(onSubmit)} className='h-full  min-h-[500px] pt-10 mx-4 relative '>
                 <div className="flex flex-col px-2">
                     {/* First Name */}
@@ -93,7 +109,7 @@ const SearchUser = () => {
                                 {...register("first_name")} />
                             <label
                                 htmlFor="firstName"
-                                className={`absolute left-0 bottom-10 text-gray-500 text-sm transition-all duration-200 peer-placeholder-shown:bottom-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 ${firstName && "peer-focus:bottom-8 peer-focus:text-sm"}`}
+                                className={`absolute left-0 bottom-10 text-gray-500 text-sm transition-all duration-200 peer-placeholder-shown:bottom-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 ${firstName && "peer-focus:bottom-10 peer-focus:text-xs"}`}
                             >
                                 First Name
                             </label>
@@ -112,7 +128,7 @@ const SearchUser = () => {
                                 {...register("last_name")} />
                             <label
                                 htmlFor="lastName"
-                                className={`absolute left-0 bottom-10 text-gray-500 text-sm transition-all duration-200 peer-placeholder-shown:bottom-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 ${lastName && "peer-focus:bottom-8 peer-focus:text-sm"}`}
+                                className={`absolute left-0 bottom-10 text-gray-500 text-sm transition-all duration-200 peer-placeholder-shown:bottom-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 ${lastName && "peer-focus:bottom-10 peer-focus:text-xs"}`}
                             >
                                 Last Name
                             </label>
@@ -141,8 +157,8 @@ const SearchUser = () => {
                             <p className="ml-14 mt-5 text-sm text-gray-400">{errors.mobile.message}</p>
                         )
                 }
-                {user && (firstName || lastName) && <Button variant="ghost" type='submit' className='h-14 w-14 rounded-full absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white bg-blue-600 hover:bg-blue-600 hover:text-white '>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className=" w-10 h-10 lucide lucide-check-icon lucide-check  "><path d="M20 6 9 17l-5-5" /></svg>
+                {user && (firstName || lastName) && <Button variant="ghost" type='submit' className='h-12 w-12 rounded-full absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white bg-blue-600 hover:bg-blue-600 hover:text-white '>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 lucide lucide-check-icon lucide-check  "><path d="M20 6 9 17l-5-5" /></svg>
                 </Button>}
             </form>
         </div>

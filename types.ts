@@ -36,7 +36,9 @@ export type User = {
 
 export type StoreType = {
     user: User | null,
-    setUser: Function
+    setUser: Function,
+    convParti: ConversationParticipantType | null,
+    setConvParti: Function
 }
 
 
@@ -44,10 +46,21 @@ export type searchUserType = {
     data: {
         success: boolean,
         message: string,
-        user: {
-            id: number,
-        }
+        user: number,
     }
+}
+
+
+export type ConversationParticipantType = {
+    id: number,
+    first_name?: string,
+    last_name?: string,
+    conversationId?: number | null,
+    image?: string | null,
+    userId: number,
+    joined_at: Date,
+    role: string,
+    created_by: number,
 }
 
 

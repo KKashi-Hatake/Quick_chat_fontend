@@ -51,6 +51,15 @@ export type searchUserType = {
 }
 
 
+export type CreateConvPartiType = {
+    data: {
+        success: boolean,
+        message: string,
+        convParti: ConversationParticipantType,
+    }
+}
+
+
 export type ConversationParticipantType = {
     id: number,
     first_name?: string,

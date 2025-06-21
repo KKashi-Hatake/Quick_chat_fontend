@@ -32,7 +32,7 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
-const SearchUser = ({ setOpen }: { setOpen: Dispatch<SetStateAction<boolean>> }) => {
+const SearchUser = ({ setOpen, setContact }: { setOpen: Dispatch<SetStateAction<boolean>>, setContact: Dispatch<SetStateAction<boolean>> }) => {
     const setParticipant = useStore((state: StoreType) => state.setConvParti);
     const [user, setUser] = useState<number | null>(null);
     const {
@@ -85,9 +85,9 @@ const SearchUser = ({ setOpen }: { setOpen: Dispatch<SetStateAction<boolean>> })
         }
         try {
             const convParti = await createConversationPaticipant(payload);
-            console.log(convParti);
             setParticipant(convParti)
             setOpen(false);
+            setContact(false);
         } catch (error) {
             console.log("Error while create conversation participant", error);
             toast.error("Something went wrong, Please try again later!");

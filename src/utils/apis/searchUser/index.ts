@@ -1,5 +1,5 @@
 
-import { searchUserType } from "../../../../types";
+import { CreateConvPartiType, searchUserType } from "../../../../types";
 import { toast } from "sonner";
 import api from "@/lib/axios";
 
@@ -28,9 +28,9 @@ export const createConversationPaticipant = async (payload: {
     lastName: string,
 }) => {
     try {
-        const res: any = await api.post(`/api/v1/user/create-conversation-participant`, payload);
+        const res: CreateConvPartiType = await api.post(`/api/v1/user/create-conversation-participant`, payload);
         if (res?.data?.success) {
-            return res?.data?.message;
+            return res?.data?.convParti;
         } else {
             toast(res?.data?.message)
             return null

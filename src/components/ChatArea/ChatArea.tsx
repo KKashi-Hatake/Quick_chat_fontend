@@ -17,12 +17,21 @@ const ChatArea = ({ user }: { user?: CustomUser }) => {
             setUser(user)
         }
     }, [user])
+
     let socket = useMemo(() => {
         const socket: CustomSocket = getSocket()
         return socket.connect();
     }, [])
-
+    
     useEffect(() => {
+        socket.on("connect", () => {
+            console.log("Connected to server with ID:", socket.id);
+        });
+
+        socket.on("connect_error", (err) => {
+            console.error("Connection error:", err);
+        });
+
         socket.on('message', (data: any) => {
             console.log("The socket message is", data)
         })

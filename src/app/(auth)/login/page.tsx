@@ -1,6 +1,12 @@
 import { LoginForm } from "@/components/auth/login-form"
+import { authOptions, CustomSession } from "@/app/api/auth/[...nextauth]/options"
+import { getServerSession } from "next-auth"
 
-export default function LoginPage() {
+
+export default async function LoginPage() {
+  const session: CustomSession | null = await getServerSession(authOptions)
+
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -8,7 +14,7 @@ export default function LoginPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm />
+            <LoginForm session={session} />
           </div>
         </div>
       </div>

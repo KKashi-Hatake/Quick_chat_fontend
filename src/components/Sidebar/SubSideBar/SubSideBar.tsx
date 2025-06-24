@@ -35,9 +35,6 @@ const SubSideBar = () => {
                             <DropdownMenuContent>
                                 <DropdownMenuLabel>Setting</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                {/* <DropdownMenuItem>Profile</DropdownMenuItem>
-                                <DropdownMenuItem>Billing</DropdownMenuItem>
-                                <DropdownMenuItem>Team</DropdownMenuItem> */}
                                 <DropdownMenuItem className='text-red-600  cursor-pointer bg-white hover:bg-gray-100 m-0 p-0'>
                                     <Button variant="ghost" className='h-7 hover:text-red-600 ' onClick={() => signOut({ callbackUrl: '/' })}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /></svg>
@@ -48,7 +45,7 @@ const SubSideBar = () => {
                         </DropdownMenu>
                     </div>
                     <div className=' h-10 w-10  mx-auto flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200'>
-                        <Avatar className='h-7 w-7'>
+                        <Avatar className='h-10 w-10'>
                             <AvatarImage src={user?.image || "https://github.com/shadcn.png"} />
                             <AvatarFallback>DP</AvatarFallback>
                         </Avatar>

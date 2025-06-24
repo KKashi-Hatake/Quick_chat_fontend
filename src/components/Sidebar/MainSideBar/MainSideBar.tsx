@@ -82,7 +82,7 @@ const MainSideBar = () => {
 
                     {/* listing section */}
                     <main className='h-[calc(100vh-150px)] mt-2 overflow-y-scroll'>
-                        <Listing />
+                        <Listing searchTerm = {searchTerm} />
                     </main>
                 </motion.div>}
         </AnimatePresence>

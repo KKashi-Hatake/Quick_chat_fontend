@@ -1,7 +1,9 @@
 import { Input } from '@/components/ui/input'
-import React from 'react'
+import React, { useState } from 'react'
 
 const ChatBox = () => {
+    const [msg, setMsg] = useState<string>("")
+
     return (
         <div className='w-full absolute bottom-20'>
             <div className='pl-3 grid grid-cols-12 '>
@@ -21,7 +23,7 @@ const ChatBox = () => {
                     </span>
                 </div>
                 <div className='col-span-11 grid grid-cols-12 mr-2'>
-                    <input className=' col-span-11 h-12 focus-visible:ring-0 border-0 outline-0 active:border-0 active:outline-0 ' placeholder='Type a message' />
+                    <input className=' col-span-11 h-12 focus-visible:ring-0 border-0 outline-0 active:border-0 active:outline-0 ' placeholder='Type a message' value={msg} onChange={(e) => setMsg(e.target.value)} />
                     <div className='col-span-1 rounded-r-full  flex justify-end items-center bg-white  '>
                         <span className='h-10 w-10 rounded-full hover:bg-blue-500 hover:text-white cursor-pointer flex justify-center items-center mr-2'>
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mic-icon lucide-mic"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" x2="12" y1="19" y2="22" /></svg>

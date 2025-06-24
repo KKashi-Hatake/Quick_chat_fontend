@@ -8,29 +8,37 @@ import HeroSection from '../HeroSection/HeroSection'
 import { CustomSocket, getSocket } from '@/lib/socket.config'
 import { CustomUser } from '@/app/api/auth/[...nextauth]/options'
 import { useStore } from '@/zustand/store'
+import { getConversations } from '@/utils/apis/searchUser'
+import { User } from '../../../types'
 
 const ChatArea = ({ user }: { user?: CustomUser }) => {
-
-    const setUser = useStore(state => state.setUser)
+    const setUser = useStore(state => state.setUser);
+    const setConversations = useStore(state => state.setConversations)
     useEffect(() => {
         if (user) {
-            setUser(user)
+            setUser((prev: User | null) => {
+                if (JSON.stringify(prev) !== JSON.stringify(user)) {
+                    return user;
+                }
+                return prev;
+            });
         }
-    }, [user])
+    }, [user]);
+
+    useEffect(() => {
+        const getConv = async () => {
+            const res = await getConversations();
+            setConversations(res);
+        }
+        getConv();
+    }, [])
 
     let socket = useMemo(() => {
         const socket: CustomSocket = getSocket()
         return socket.connect();
     }, [])
-    
-    useEffect(() => {
-        socket.on("connect", () => {
-            console.log("Connected to server with ID:", socket.id);
-        });
 
-        socket.on("connect_error", (err) => {
-            console.error("Connection error:", err);
-        });
+    useEffect(() => {
 
         socket.on('message', (data: any) => {
             console.log("The socket message is", data)

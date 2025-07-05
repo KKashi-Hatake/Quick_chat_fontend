@@ -1,8 +1,29 @@
 import { Input } from '@/components/ui/input'
+import { sendMessage } from '@/utils/apis/chats'
+import { useStore } from '@/zustand/store'
 import React, { useState } from 'react'
 
 const ChatBox = () => {
+    const convParti = useStore(store => store.convParti)
     const [msg, setMsg] = useState<string>("")
+    const sendMsg = async () => {
+        try {
+            const payload = {
+                userId: convParti!.userId,
+                msg,
+                convType: "normal",
+                partiId: convParti!.id,
+                mediaUrl: "",
+                type: "text"
+            }
+            const response = await sendMessage(payload)
+            setMsg("");
+
+        } catch (error) {
+
+        }
+    }
+
 
     return (
         <div className='w-full absolute bottom-20'>
@@ -25,9 +46,14 @@ const ChatBox = () => {
                 <div className='col-span-11 grid grid-cols-12 mr-2'>
                     <input className=' col-span-11 h-12 focus-visible:ring-0 border-0 outline-0 active:border-0 active:outline-0 ' placeholder='Type a message' value={msg} onChange={(e) => setMsg(e.target.value)} />
                     <div className='col-span-1 rounded-r-full  flex justify-end items-center bg-white  '>
-                        <span className='h-10 w-10 rounded-full hover:bg-blue-500 hover:text-white cursor-pointer flex justify-center items-center mr-2'>
+                        {!msg ? <span className='h-10 w-10 rounded-full hover:bg-blue-500 hover:text-white cursor-pointer flex justify-center items-center mr-2'>
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mic-icon lucide-mic"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" x2="12" y1="19" y2="22" /></svg>
-                        </span>
+                        </span> :
+                            <span className='h-10 w-10 rounded-full bg-blue-500 hover:opacity-80 text-white cursor-pointer flex justify-center items-center mr-2'
+                                onClick={() => sendMsg()}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-send-horizontal-icon lucide-send-horizontal"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" /><path d="M6 12h16" /></svg>
+                            </span>}
                     </div>
                 </div>
             </div>

@@ -1,6 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useStore } from '@/zustand/store'
 import React from 'react'
+import { StoreType } from '../../../../types'
 
 
 
@@ -12,9 +14,14 @@ type props = {
 
 
 const Navbar = ({ image, firstName, lastName }: props) => {
+  const setParticipant = useStore((state: StoreType) => state.setConvParti);
+
+  const handleClick = () => {
+    setParticipant(null)
+  }
   return (
-    <section className='h-16 flex items-center justify-between'>
-      <div className="w-fit flex items-center h-full p-4 cursor-pointer">
+    <section className='w-full h-16 flex items-center justify-between border-2'>
+      <div className="w-full flex items-center h-full p-4 cursor-pointer">
         {image ? <Avatar className='h-9 w-9'>
           <AvatarImage src={image} />
           <AvatarFallback>DP</AvatarFallback>
@@ -71,7 +78,7 @@ const Navbar = ({ image, firstName, lastName }: props) => {
                     <p className='col-span-4 text-sm'>Disappearing messages</p>
                   </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem className='h-9 px-4 text-[#484a4d] font-light mt-1'>
+                <DropdownMenuItem className='h-9 px-4 text-[#484a4d] font-light mt-1 ' onClick={handleClick}>
                   <div className='w-full grid grid-cols-5 text-base font-normal items-center'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-x-icon lucide-circle-x"><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg>
                     <p className='col-span-4 text-sm'>Close chat</p>

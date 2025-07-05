@@ -16,15 +16,12 @@ import { useStore } from '@/zustand/store';
 const ContactsListing = ({ data, search }: { data: SearchChatsContactsType, search: string }) => {
     const setParticipant = useStore((state: StoreType) => state.setConvParti);
 
-    const [isHovered, setIsHovered] = useState(false)
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const handleClick = () => {
         setParticipant(data)
     }
+    
     return (
-        <div key={data.id} className='w-full h-[68px] mt-2 px-2  relative group cursor-pointer-'
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+        <div key={data.id} className='w-full h-[68px] mt-2 px-2  relative group cursor-pointer'
             onClick={handleClick}
         >
             <div className='grid grid-cols-10 w-full h-[68px] rounded-xl hover:bg-gray-100'>

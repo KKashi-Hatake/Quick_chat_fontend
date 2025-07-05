@@ -50,6 +50,14 @@ export type GetConversationType = {
 }
 
 
+export type MessageStatusType = {
+    id: number,
+    messageId: number,
+    status: string,
+    created_at: Date,
+    updated_at: Date
+}
+
 export type MessageType = {
     id: number
     content: string
@@ -59,6 +67,7 @@ export type MessageType = {
     mediaUrl?: string
     created_at: Date
     is_deleted: boolean
+    MessageStatus: MessageStatusType
 }
 
 export type ConversationType = {
@@ -69,7 +78,8 @@ export type ConversationType = {
     avatar: string | null
     type: string
     created_at: Date,
-    message?: MessageType[] | null
+    updated_at: Date,
+    messages?: MessageType[] | null
 } | null
 
 
@@ -81,7 +91,8 @@ export type ConversationParticipantType = {
     conversation?: ConversationType | null,
     image?: string | null,
     userId: number,
-    joined_at: Date,
+    created_at: Date,
+    updated_at: Date,
     role: string,
     created_by: number,
 }
@@ -95,7 +106,8 @@ export type SearchChatsContactsType = {
     conversation?: ConversationType | null,
     image?: string | null
     userId: number
-    joined_at: Date
+    created_at: Date
+    updated_at: Date
     role: string
     about: string
     created_by: number
@@ -115,3 +127,43 @@ export type SearchChatsContactsResultType = {
     }
 }
 
+
+
+export type MessagePayload = {
+    userId: number,
+    msg: string,
+    convType: string,
+    partiId: number,
+    mediaUrl: string,
+    type: string
+}
+
+
+export type SentMessageType = {
+    id: number,
+    content: string,
+    senderId: number,
+    receiverId: number,
+    conversationId: number,
+    messageType: string,
+    mediaUrl: string | null,
+    created_at: Date,
+    updated_at: Date,
+    is_deleted: boolean,
+    MessageStatus: {
+        id: number,
+        messageId: number,
+        status: string,
+        created_at: Date,
+        updated_at: Date
+    }
+}
+
+
+export type SentMessageResponseType = {
+    data: {
+        success: boolean,
+        message: string,
+        msg: SentMessageType
+    }
+}

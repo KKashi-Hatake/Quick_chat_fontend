@@ -9,9 +9,12 @@ export interface CustomSocket extends Socket {
 
 let socket: CustomSocket;
 
-export const getSocket = (): CustomSocket => {
+export const getSocket = (userId:number | 0): CustomSocket => {
     if(!socket){
-        socket = io(ENV.BACKEND_URL, {autoConnect:false}) as CustomSocket;
+        socket = io(ENV.BACKEND_URL, {
+				query: {
+					userId,
+				},autoConnect:false}) as CustomSocket;
     }
     return socket;
 }

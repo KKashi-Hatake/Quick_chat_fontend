@@ -36,13 +36,6 @@ export function LoginForm(
     { session }: { session: CustomSession | null }
 ) {
 
-    useEffect(() => {
-        console.log(session?.user)
-        if (session?.user) {
-            router.replace("/")
-        }
-    }, [session]);
-
     const router = useRouter();
     const {
         register,

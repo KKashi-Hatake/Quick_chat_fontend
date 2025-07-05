@@ -31,7 +31,7 @@ const Listing = ({ searchTerm }: { searchTerm: string }) => {
     return (
         <>
             {searchTerm ?
-                <div className=''>
+                <div >
                     {data?.contacts?.length !== 0 &&
                         <div className='h-fit'>
                             <p className='m-6 text-gray-700 font-semibold text-base'>Contacts</p>

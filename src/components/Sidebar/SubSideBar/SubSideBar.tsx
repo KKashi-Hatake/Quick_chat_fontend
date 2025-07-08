@@ -45,7 +45,7 @@ const SubSideBar = () => {
                     </div>
                     <div className=' h-10 w-10  mx-auto flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200'>
                         <Avatar className='h-10 w-10'>
-                            <AvatarImage src={user?.image || "https://github.com/shadcn.png"} />
+                            <AvatarImage src={user?.image || "https://github.com/shadcn.png"} className='bg-center bg-no-repeat'/>
                             <AvatarFallback>DP</AvatarFallback>
                         </Avatar>
                     </div>

@@ -9,22 +9,24 @@ import { CustomSocket, getSocket } from '@/lib/socket.config'
 import { CustomUser } from '@/app/api/auth/[...nextauth]/options'
 import { useStore } from '@/zustand/store'
 import { getConversations } from '@/utils/apis/searchUser'
-import { User } from '../../../types'
 import SubSideBar from '../Sidebar/SubSideBar/SubSideBar'
 import MainSideBar from '../Sidebar/MainSideBar/MainSideBar'
 
 const ChatArea = ({ user }: { user: CustomUser }) => {
     const setUser = useStore(state => state.setUser);
+    const prevUser = useStore(state => state.user);
     const setConversations = useStore(state => state.setConversations)
+    const messages = useStore(state => state.message);
+    const setMessages = useStore(state => state.setMessage)
     const [convTrigger, setConvTrigger] = useState(false);
     useEffect(() => {
         if (user) {
-            setUser((prev: User | null) => {
-                if (JSON.stringify(prev) !== JSON.stringify(user)) {
-                    return user;
-                }
-                return prev;
-            });
+            if (JSON.stringify(prevUser) !== JSON.stringify(user)) {
+                setUser(user);
+            }else{
+                setUser(prevUser);
+            }
+
         }
     }, [user]);
 
@@ -43,19 +45,16 @@ const ChatArea = ({ user }: { user: CustomUser }) => {
 
     useEffect(() => {
         const message = (data: any) => {
-            console.log("The socket message is", data)
+            setMessages(messages?.push(data.message));
+            console.log("message triggered", data)
         }
         const newMessage = (data: any) => {
-            console.log("The socket message is", data)
+            console.log("new message triggered", data)
         }
         const newConv = (data: any) => {
             setConvTrigger(!convTrigger);
             console.log("new conversation triggered", data)
         }
-
-
-
-
 
         socket.on('message', message)
         socket.on('newMessage', newMessage);
@@ -72,8 +71,7 @@ const ChatArea = ({ user }: { user: CustomUser }) => {
 
     return (
         <div className="w-[748px] md:w-full h-full flex">
-            {/* Sidebar */}
-            {/* <SideBar /> */}
+            {/* SubSidebar */}
             <SubSideBar />
             {/* main side bar */}
             <MainSideBar />

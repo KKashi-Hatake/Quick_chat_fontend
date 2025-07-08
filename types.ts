@@ -1,13 +1,13 @@
 
 
 export type User = {
-    id: number
+    id: string
     name: string
     image: string | null,
     phone: string
     created_at: Date,
-    verificationId: number,
-    twoFAId: number | null,
+    verificationId: string,
+    twoFAId: string | null,
     token: string | null,
     about?: string
 }
@@ -16,6 +16,9 @@ export type StoreType = {
     user: User | null,
     setUser: Function,
     convParti: ConversationParticipantType | null,
+    message: MessageType[] | null,
+    
+    setMessage: Function,
     setConvParti: Function
     conversations: ConversationParticipantType[] | null,
     setConversations: Function
@@ -26,7 +29,7 @@ export type searchUserType = {
     data: {
         success: boolean,
         message: string,
-        user: number,
+        user: string,
     }
 }
 
@@ -51,18 +54,18 @@ export type GetConversationType = {
 
 
 export type MessageStatusType = {
-    id: number,
-    messageId: number,
+    id: string,
+    messageId: string,
     status: string,
     created_at: Date,
     updated_at: Date
 }
 
 export type MessageType = {
-    id: number
+    id: string
     content: string
-    senderId: number
-    conversationId: number
+    senderId: string
+    conversationId: string
     messageType: string
     mediaUrl?: string
     created_at: Date
@@ -71,10 +74,10 @@ export type MessageType = {
 }
 
 export type ConversationType = {
-    id: number
+    id: string
     name: string | null
     description: string | null
-    created_by: number
+    created_by: string
     avatar: string | null
     type: string
     created_at: Date,
@@ -84,33 +87,33 @@ export type ConversationType = {
 
 
 export type ConversationParticipantType = {
-    id: number,
+    id: string,
     first_name?: string,
     last_name?: string,
-    conversationId?: number | null,
+    conversationId?: string | null,
     conversation?: ConversationType | null,
     image?: string | null,
-    userId: number,
+    userId: string,
     created_at: Date,
     updated_at: Date,
     role: string,
-    created_by: number,
+    created_by: string,
 }
 
 
 export type SearchChatsContactsType = {
-    id: number
+    id: string
     first_name?: string | null
     last_name?: string | null
-    conversationId?: number | null
+    conversationId?: string | null
     conversation?: ConversationType | null,
     image?: string | null
-    userId: number
+    userId: string
     created_at: Date
     updated_at: Date
     role: string
     about: string
-    created_by: number
+    created_by: string
 }
 
 export type SearchChatsType = {
@@ -130,29 +133,29 @@ export type SearchChatsContactsResultType = {
 
 
 export type MessagePayload = {
-    userId: number,
+    userId: string,
     msg: string,
     convType: string,
-    partiId: number,
+    partiId: string,
     mediaUrl: string,
     type: string
 }
 
 
 export type SentMessageType = {
-    id: number,
+    id: string,
     content: string,
-    senderId: number,
-    receiverId: number,
-    conversationId: number,
+    senderId: string,
+    receiverId: string,
+    conversationId: string,
     messageType: string,
     mediaUrl: string | null,
     created_at: Date,
     updated_at: Date,
     is_deleted: boolean,
     MessageStatus: {
-        id: number,
-        messageId: number,
+        id: string,
+        messageId: string,
         status: string,
         created_at: Date,
         updated_at: Date
@@ -165,5 +168,14 @@ export type SentMessageResponseType = {
         success: boolean,
         message: string,
         msg: SentMessageType
+    }
+}
+
+
+export type GetMessageResponseType = {
+    data: {
+        success: boolean,
+        message: string,
+        data: MessageType[]
     }
 }

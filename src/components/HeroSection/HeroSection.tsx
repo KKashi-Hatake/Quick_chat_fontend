@@ -16,7 +16,7 @@ const HeroSection = () => {
   }, [convParti])
 
   return (
-    convParti ? <div className='w-fit'>
+    convParti ? <div className='h-screen w-[70%] flex flex-col'>
       {/* Navbar */}
       <Navbar image={participant?.image || null} firstName={participant?.first_name} lastName={participant?.last_name} />
       {/* Chat Area */}

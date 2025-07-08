@@ -1,32 +1,34 @@
 import { Input } from '@/components/ui/input'
 import { sendMessage } from '@/utils/apis/chats'
 import { useStore } from '@/zustand/store'
+import { send } from 'process'
 import React, { useState } from 'react'
 
 const ChatBox = () => {
     const convParti = useStore(store => store.convParti)
     const [msg, setMsg] = useState<string>("")
+    console.log("convParti", convParti)
     const sendMsg = async () => {
         try {
             const payload = {
-                userId: convParti!.userId,
+                userId: convParti!.conversation!.created_by,
                 msg,
                 convType: "normal",
-                partiId: convParti!.id,
+                partiId: convParti!.conversation!.id,
                 mediaUrl: "",
                 type: "text"
             }
-            const response = await sendMessage(payload)
+
+            const response = await sendMessage(payload);
             setMsg("");
-
         } catch (error) {
-
+            console.error("Error sending message:", error);
         }
     }
 
 
     return (
-        <div className='w-full absolute bottom-20'>
+        <div className='w-full absolute bottom-3'>
             <div className='pl-3 grid grid-cols-12 '>
                 <div className='col-span-1 bg-white rounded-l-full flex justify-between px-[6px] items-center '>
                     <span className='h-10 w-10 hover:bg-gray-50 rounded-full flex items-center justify-center cursor-pointer'>
@@ -44,7 +46,11 @@ const ChatBox = () => {
                     </span>
                 </div>
                 <div className='col-span-11 grid grid-cols-12 mr-2'>
-                    <input className=' col-span-11 h-12 focus-visible:ring-0 border-0 outline-0 active:border-0 active:outline-0 ' placeholder='Type a message' value={msg} onChange={(e) => setMsg(e.target.value)} />
+                    <input className=' col-span-11 h-12 focus-visible:ring-0 border-0 outline-0 active:border-0 active:outline-0 ' placeholder='Type a message' value={msg} onChange={(e) => setMsg(e.target.value)} onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            sendMsg();
+                        }
+                    }} />
                     <div className='col-span-1 rounded-r-full  flex justify-end items-center bg-white  '>
                         {!msg ? <span className='h-10 w-10 rounded-full hover:bg-blue-500 hover:text-white cursor-pointer flex justify-center items-center mr-2'>
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mic-icon lucide-mic"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" x2="12" y1="19" y2="22" /></svg>

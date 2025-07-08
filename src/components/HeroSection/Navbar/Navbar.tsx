@@ -20,7 +20,7 @@ const Navbar = ({ image, firstName, lastName }: props) => {
     setParticipant(null)
   }
   return (
-    <section className='w-full h-16 flex items-center justify-between border-2'>
+    <section className='w-full h-16 flex items-center justify-between'>
       <div className="w-full flex items-center h-full p-4 cursor-pointer">
         {image ? <Avatar className='h-9 w-9'>
           <AvatarImage src={image} />

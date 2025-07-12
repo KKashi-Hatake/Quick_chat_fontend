@@ -12,7 +12,7 @@ import { getConversations } from '@/utils/apis/searchUser'
 import SubSideBar from '../Sidebar/SubSideBar/SubSideBar'
 import MainSideBar from '../Sidebar/MainSideBar/MainSideBar'
 
-const ChatArea = ({ user }: { user: CustomUser }) => {
+const MainArea = ({ user }: { user: CustomUser }) => {
     const setUser = useStore(state => state.setUser);
     const prevUser = useStore(state => state.user);
     const setConversations = useStore(state => state.setConversations)
@@ -23,10 +23,9 @@ const ChatArea = ({ user }: { user: CustomUser }) => {
         if (user) {
             if (JSON.stringify(prevUser) !== JSON.stringify(user)) {
                 setUser(user);
-            }else{
+            } else {
                 setUser(prevUser);
             }
-
         }
     }, [user]);
 
@@ -45,7 +44,7 @@ const ChatArea = ({ user }: { user: CustomUser }) => {
 
     useEffect(() => {
         const message = (data: any) => {
-            setMessages(messages?.push(data.message));
+            
             console.log("message triggered", data)
         }
         const newMessage = (data: any) => {
@@ -86,4 +85,4 @@ const ChatArea = ({ user }: { user: CustomUser }) => {
     )
 }
 
-export default ChatArea
+export default MainArea

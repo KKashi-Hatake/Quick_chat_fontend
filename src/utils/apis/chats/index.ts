@@ -22,7 +22,7 @@ export const sendMessage = async (payload: MessagePayload) => {
 }
 
 
-export const getMessages = async (id:number, cursor:Date|string) => {
+export const getMessages = async (id:string, cursor:Date|string) => {
     try {
         const res: GetMessageResponseType = await api.get(`/api/v1/chat/getMessages/${id}?limit=10${cursor ? `&cursor=${cursor}` : ''}`);
         if (res?.data?.success) {

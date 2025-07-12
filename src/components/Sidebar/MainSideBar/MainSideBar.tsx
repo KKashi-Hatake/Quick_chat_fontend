@@ -84,7 +84,7 @@ const MainSideBar = () => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="col-span-7 w-[305px] lg:w-[calc(523px-64px)] border-r-[1px] border-gray-200"
+                    className="col-span-7 w-[380px] lg:w-[calc(523px-64px)] border-r-[1px] border-gray-200"
                 >
                     {/* Header */}
                     <Header setOpen={setOpen} />

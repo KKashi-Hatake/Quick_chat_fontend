@@ -1,25 +1,28 @@
-import { Input } from '@/components/ui/input'
+
 import { sendMessage } from '@/utils/apis/chats'
 import { useStore } from '@/zustand/store'
-import { send } from 'process'
 import React, { useState } from 'react'
 
 const ChatBox = () => {
     const convParti = useStore(store => store.convParti)
-    const [msg, setMsg] = useState<string>("")
-    console.log("convParti", convParti)
+    const [msg, setMsg] = useState<string>("");
+    const messages = useStore(state => state.message);
+    const setMessages = useStore(state => state.setMessage);
+
+
     const sendMsg = async () => {
         try {
             const payload = {
-                userId: convParti!.conversation!.created_by,
+                userId: convParti!.userId,
                 msg,
                 convType: "normal",
-                partiId: convParti!.conversation!.id,
+                partiId: convParti!.id,
                 mediaUrl: "",
                 type: "text"
             }
-
+            
             const response = await sendMessage(payload);
+            setMessages([...(messages || []), response]);
             setMsg("");
         } catch (error) {
             console.error("Error sending message:", error);

@@ -7,22 +7,22 @@ import { ConversationParticipantType, StoreType } from '../../../types';
 
 const HeroSection = () => {
   const convParti = useStore((state: StoreType) => state.convParti);
-  const [participant, setParticipant] = useState<ConversationParticipantType | null>(null)
+  // const [participant, setParticipant] = useState<ConversationParticipantType | null>(null)
 
-  useEffect(() => {
-    if (convParti) {
-      setParticipant(convParti);
-    }
-  }, [convParti])
+  // useEffect(() => {
+  //   if (convParti) {
+  //     setParticipant(convParti);
+  //   }
+  // }, [convParti])
 
   return (
-    convParti ? <div className='h-screen w-[70%] flex flex-col'>
+    convParti ? <div className='h-screen md:w-[58%] lg:w-[66%] 2xl:w-full flex flex-col border'>
       {/* Navbar */}
-      <Navbar image={participant?.image || null} firstName={participant?.first_name} lastName={participant?.last_name} />
+      <Navbar image={convParti?.image || null} firstName={convParti?.first_name} lastName={convParti?.last_name} />
       {/* Chat Area */}
       <ChatArea />
     </div> :
-      <div className=" h-screen w-[98%] flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className=" h-screen flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         {/* Right Panel - Welcome Screen with Cool Image */}
         <div className="text-center">
           {/* Cool Chat Illustration */}

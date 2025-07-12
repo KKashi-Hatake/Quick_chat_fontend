@@ -13,7 +13,7 @@ export interface CustomSession {
 }
 
 export interface CustomUser {
-  id: number
+  id: string
   name: string
   email: string
   image: string | null

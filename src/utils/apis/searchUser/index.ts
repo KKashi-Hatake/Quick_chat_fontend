@@ -23,7 +23,7 @@ export const searchUser = async (payload: string) => {
 }
 
 export const createConversationPaticipant = async (payload: {
-    id: number,
+    id: string,
     firstName: string,
     lastName: string,
 }) => {

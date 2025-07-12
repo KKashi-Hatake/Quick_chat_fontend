@@ -34,7 +34,7 @@ type FormData = z.infer<typeof FormSchema>;
 
 const SearchUser = ({ setOpen, setContact }: { setOpen: Dispatch<SetStateAction<boolean>>, setContact: Dispatch<SetStateAction<boolean>> }) => {
     const setParticipant = useStore((state: StoreType) => state.setConvParti);
-    const [user, setUser] = useState<number | null>(null);
+    const [user, setUser] = useState<string | null>(null);
     const {
         register,
         handleSubmit,

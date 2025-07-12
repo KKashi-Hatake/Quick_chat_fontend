@@ -17,7 +17,7 @@ export type StoreType = {
     setUser: Function,
     convParti: ConversationParticipantType | null,
     message: MessageType[] | null,
-    
+
     setMessage: Function,
     setConvParti: Function
     conversations: ConversationParticipantType[] | null,
@@ -65,6 +65,9 @@ export type MessageType = {
     id: string
     content: string
     senderId: string
+    sender: {
+        userId: string
+    }
     conversationId: string
     messageType: string
     mediaUrl?: string

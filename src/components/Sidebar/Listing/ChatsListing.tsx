@@ -11,6 +11,7 @@ import { useStore } from '@/zustand/store';
 
 const ChatsListing = ({ data, search }: { data: SearchChatsContactsType | ConversationParticipantType, search: string }) => {
     const setParticipant = useStore((state: StoreType) => state.setConvParti);
+    const user = useStore((state: StoreType) => state.user);
     let date = localTimeZone(`${data?.conversation?.updated_at}`);
     const [isHovered, setIsHovered] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -20,7 +21,7 @@ const ChatsListing = ({ data, search }: { data: SearchChatsContactsType | Conver
         setParticipant(data)
     }
     return (
-        <div key={data.id} className='w-full h-[68px] mt-2 px-2  relative group cursor-pointer'
+        <div key={data.id} className='w-full h-[68px] mt-2 px-3 relative group cursor-pointer'
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={handleClick}
@@ -37,31 +38,43 @@ const ChatsListing = ({ data, search }: { data: SearchChatsContactsType | Conver
                         </div>
                     }
                 </div>
-                <div className='col-span-6 '><p className='mt-2 text-lg'>
-                    <HighlightedText name={`${data.first_name} ${data.last_name}`} search={search} />
-                </p>
-                    <div className='flex'>
-                        <span className='w-6'>
-                            {
-                                message?.MessageStatus?.status === 'sent' ?
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5" /></svg> :
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-check-check-icon lucide-check-check ${message?.MessageStatus?.status === "read" && "text-blue-500"}`}><path d="M18 6 7 17l-5-5" /><path d="m22 10-7.5 7.5L13 16" /></svg>
-                            }
-                        </span>
-                        <p className='text-sm font-light text0gray-500'>{message?.content as string}</p>
+                <div className='col-span-8 grid grid-rows-2 pr-5'>
+                    <span className='mt-2 flex justify-between'>
+                        <p className=' text-lg w-fit max-w-4/5 row-span-1'>
+                            <HighlightedText name={`${data.first_name} ${data.last_name}`} search={search} />
+                        </p>
+                        <p className='text-xs font-thin text-center px-1 mt-1'>
+                            {date ? date : "NA"}
+                        </p>
+                    </span>
+                    <div className='flex w-fit max-w-[285px]'>
+                        {
+                            message?.sender?.userId === user!.id && <span className='w-6 h-6 mr-1'>
+                                {
+                                    message?.MessageStatus?.status === 'sent' ?
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5" /></svg> :
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-check-check-icon lucide-check-check ${message?.MessageStatus?.status === "read" && "text-blue-500"}`}><path d="M18 6 7 17l-5-5" /><path d="m22 10-7.5 7.5L13 16" /></svg>
+                                }
+                            </span>
+                        }
+                        <p className='text-sm font-light whitespace-nowrap overflow-hidden overflow-x-hidden block text-ellipsis '>{message?.content as string}</p>
                     </div>
                 </div>
                 <div className='col-span-2 mt-2'>
-                    <p className='text-xs font-thin text-center mt-1'>
-                        {date ? date : "NA"}
-                    </p>
-                    <span >
+                    <span className='pr-2'>
                         <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-                            <DropdownMenuTrigger className={`absolute top-9 right-7 transition-opacity bo duration-200 ${isHovered || isDropdownOpen ? "opacity-100" : "opacity-0"
-                                }`}>
-                                {/* <div className='h-8 w-8 hover:bg-gray-200 flex justify-center items-center rounded-full'> */}
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
-                                {/* </div> */}
+                            <DropdownMenuTrigger className={`absolute top-9 right-[44px] flex`}>
+                                {
+                                    data.unreadCount && data.unreadCount > 0 &&
+                                    <p className={`w-fit h-5 p-1 text-center bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-sans transition-all duration-300 delay-50 transform ${isHovered || isDropdownOpen ? '-translate-x-2' : 'translate-x-2'
+                                        }`}>
+                                        {data.unreadCount}
+                                    </p>
+                                }
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`absolute right-[-20px] transition-all duration-300 delay-50 ease-in-out ${isHovered || isDropdownOpen
+                                        ? 'opacity-100 pointer-events-auto -translate-x-2'
+                                        : 'opacity-0 pointer-events-none translate-x-2'
+                                    }`}><path d="m6 9 6 6 6-6" /></svg>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align='start' className='w-52 rounded-xl' onClick={() => setIsHovered(false)} >
                                 {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}

@@ -1,3 +1,4 @@
+import { Socket } from "socket.io-client"
 
 
 export type User = {
@@ -14,13 +15,17 @@ export type User = {
 
 export type StoreType = {
     user: User | null,
-    setUser: Function,
-    convParti: ConversationParticipantType | null,
-    message: MessageType[] | null,
-
-    setMessage: Function,
-    setConvParti: Function
+    message: Map<string, MessageType> | null,
+    messageIds: string[] | null,
+    socket: Socket | null,
     conversations: ConversationParticipantType[] | null,
+    convParti: ConversationParticipantType | null,
+
+    setUser: Function,
+    setSocket: Function,
+    setMessage: Function,
+    setMessageIds: Function,
+    setConvParti: Function
     setConversations: Function
 }
 
@@ -70,7 +75,7 @@ export type MessageType = {
     }
     conversationId: string
     messageType: string
-    mediaUrl?: string
+    mediaUrl: string | null
     created_at: Date
     is_deleted: boolean
     MessageStatus: MessageStatusType
@@ -101,6 +106,7 @@ export type ConversationParticipantType = {
     updated_at: Date,
     role: string,
     created_by: string,
+    unreadCount?: number,
 }
 
 
@@ -117,6 +123,7 @@ export type SearchChatsContactsType = {
     role: string
     about: string
     created_by: string
+    unreadCount?: number
 }
 
 export type SearchChatsType = {
@@ -151,6 +158,9 @@ export type SentMessageType = {
     senderId: string,
     receiverId: string,
     conversationId: string,
+    sender: {
+        userId: string
+    }
     messageType: string,
     mediaUrl: string | null,
     created_at: Date,

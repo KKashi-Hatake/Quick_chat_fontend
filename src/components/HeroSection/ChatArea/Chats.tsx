@@ -1,25 +1,38 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { MessageType, User } from '../../../../types'
+import { MessageType, StoreType, User } from '../../../../types'
 import convertUTCToIST from '@/utils/helper/ConvertUTCtoIST'
 import { getMessages } from '@/utils/apis/chats';
 import { useStore } from '@/zustand/store';
+import { set } from 'zod';
 
-const Chats = ({ convId, user }: { convId: string, user: User }) => {
+const Chats = ({ user }: { user: User }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const topSentinelRef = useRef<HTMLDivElement>(null);
+    const convParti = useStore((state: StoreType) => state.convParti);
+    const conversation = useStore((state: StoreType) => state.conversations);
+    const setConversation = useStore((state: StoreType) => state.setConversations);
 
+    const socket = useStore(state => state.socket);
     const messages = useStore(state => state.message);
     const setMessages = useStore(state => state.setMessage);
+    const messageIds = useStore(state => state.messageIds);
+    const setMessageIds = useStore(state => state.setMessageIds);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
     const fetchMessages = async (cursor?: string) => {
-        if (convId === "") return;
+        if (!convParti) return;
         setLoading(true);
-        const res = await getMessages(convId, messages ? messages[0]?.created_at : "");
+        const res = await getMessages(convParti?.conversation?.id as string, messages && messages.get(messageIds ? messageIds[0] : "")?.created_at || "");
         if (res) {
             if (res.length < 10) setHasMore(false);
-            setMessages([...res.reverse(), ...(messages || [])]);
+            let ids: string[] = [], msgIds: Map<string, MessageType> = new Map();
+            res.forEach((message: MessageType) => {
+                ids.push(message.id);
+                msgIds.set(message.id, message);
+            })
+            setMessageIds([...ids.reverse(), ...(messageIds || [])]);
+            setMessages(new Map([...[...msgIds].reverse(), ...(messages || [])]));
         }
         const scrollContainer = containerRef.current;
         const prevHeight = scrollContainer?.scrollHeight ?? 0;
@@ -31,11 +44,6 @@ const Chats = ({ convId, user }: { convId: string, user: User }) => {
         setLoading(false);
     };
 
-    useEffect(() => {
-        if (convId) {
-            fetchMessages();
-        }
-    }, [convId]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -62,15 +70,23 @@ const Chats = ({ convId, user }: { convId: string, user: User }) => {
         };
     }, [hasMore, loading]);
 
+    useEffect(() => {
+        const container = containerRef.current;
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }, [messages]); // Runs once on initial render
+
+    
     return (
         <div
             ref={containerRef}
             className="-flex-1 w-full overflow-y-auto h-[calc(100vh-130px)] 
-            [&::-webkit-scrollbar]:w-2
+            [&::-webkit-scrollbar]:w-1
             [&::-webkit-scrollbar-track]:rounded-full
-            [&::-webkit-scrollbar-track]:bg-gray-100
+            
             [&::-webkit-scrollbar-thumb]:rounded-full
-            [&::-webkit-scrollbar-thumb]:bg-blue-300
+            [&::-webkit-scrollbar-thumb]:bg-gray-500
             dark:[&::-webkit-scrollbar-track]:bg-neutral-700
             dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
             "
@@ -78,21 +94,22 @@ const Chats = ({ convId, user }: { convId: string, user: User }) => {
             {/* 👇 Sentinel: watched by IntersectionObserver */}
             <div ref={topSentinelRef}></div>
             {
-                messages?.length && messages.map((message) => {
-
+                messageIds && messageIds?.length && messageIds.map((messageId) => {
+                    let message = null;
+                    if (messages && messages.has(messageId)) message = messages.get(messageId);
                     return (
-                        <div key={message.id} className="flex-1 overflow-y-auto p-4 space-y-4">
+                        message && <div key={message.id} className="flex-1 overflow-y-auto px-8 my-1">
                             {/* {messages.map((message) => ( */}
                             <div className={`flex ${message.sender.userId !== user.id ? "justify-end" : "justify-start"}`}>
                                 <div
-                                    className={`relative max-w-xs lg:max-w-md px-4 py-2  ${message.sender.userId !== user.id ? "bg-blue-500 text-white rounded-tl-lg rounded-bl-lg rounded-br-lg" : "bg-white text-gray-800 border border-gray-200 rounded-tr-lg rounded-bl-lg rounded-br-lg"
+                                    className={`relative max-w-xs lg:max-w-md p-1 px-2  ${message.sender.userId !== user.id ? "bg-blue-500 text-white rounded-tl-lg rounded-bl-lg rounded-br-lg" : "bg-white text-gray-800 border border-gray-200 rounded-tr-lg rounded-bl-lg rounded-br-lg"
                                         }`}
                                 >
                                     {/* Message Text */}
                                     <p className="text-sm">{message.content}</p>
 
                                     {/* Timestamp */}
-                                    <p className={`text-xs mt-1 ${message.sender.userId !== user.id ? "text-green-100" : "text-gray-500"}`}>
+                                    <p className={`text-[10px] font-thin text-end  mt-[1px] ${message.sender.userId !== user.id ? "text-green-100" : "text-gray-500"}`}>
                                         {convertUTCToIST(message.created_at)}
                                     </p>
 

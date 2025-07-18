@@ -91,7 +91,7 @@ const MainSideBar = () => {
                     {/* Search */}
                     <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search or start a new chat" />
                     {/* Tabs to switch */}
-                    <section className='h-8 w-full mt-4 '>
+                    <section className='h-8 w-full mt-2 '>
                         <div className=' lg:w-1/2 flex justify-between mx-4 lg:ml-5'>
                             <Button variant="outline" className={`w-10 h-8 text-sm rounded-full border-[1px] border-gray-300 hover:bg-gray-50 font-normal ${activeTab === "all" && "border-blue-600 font-normal bg-blue-200 hover:bg-blue-200 hover:text-blue-600 text-blue-600"}`} onClick={() => setActiveTab("all")}>All</Button>
                             <Button variant="outline" className={`w-20 h-8 text-sm rounded-full border-[1px] border-gray-300 hover:bg-gray-50 font-normal ${activeTab === "unread" && "border-blue-600 font-normal bg-blue-200 hover:bg-blue-200 hover:text-blue-600 text-blue-600"}`} onClick={() => setActiveTab("unread")}>Unread</Button>
@@ -100,7 +100,7 @@ const MainSideBar = () => {
                     </section>
 
                     {/* listing section */}
-                    <main className='h-[calc(100vh-160px)] mt-2  overflow-y-hidden'>
+                    <main className='h-[calc(100vh-160px)] mt-2 overflow-y-hidden'>
                         <Listing searchTerm={searchTerm} />
                     </main>
                 </motion.div>}

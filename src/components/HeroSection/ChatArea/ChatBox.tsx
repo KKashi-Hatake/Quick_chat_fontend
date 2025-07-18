@@ -2,13 +2,18 @@
 import { sendMessage } from '@/utils/apis/chats'
 import { useStore } from '@/zustand/store'
 import React, { useState } from 'react'
+import { MessageType, StoreType } from '../../../../types'
 
 const ChatBox = () => {
     const convParti = useStore(store => store.convParti)
+    const user = useStore(store => store.user)
+    const conversation = useStore((state: StoreType) => state.conversations);
+    const setConversation = useStore((state: StoreType) => state.setConversations);
     const [msg, setMsg] = useState<string>("");
     const messages = useStore(state => state.message);
     const setMessages = useStore(state => state.setMessage);
-
+    const messageIds = useStore(state => state.messageIds);
+    const setMessageIds = useStore(state => state.setMessageIds);
 
     const sendMsg = async () => {
         try {
@@ -20,9 +25,24 @@ const ChatBox = () => {
                 mediaUrl: "",
                 type: "text"
             }
-            
             const response = await sendMessage(payload);
-            setMessages([...(messages || []), response]);
+            if (response) {
+                setMessageIds([...(messageIds || []), response.id]);
+                if(messages!==null) {
+                    messages.set(response.id, response)
+                    setMessages(new Map([...messages]));
+                }else{
+                    let msg:Map<string, MessageType> = new Map();
+                    msg.set(response.id, response);
+                    setMessages(msg);
+                };
+                setConversation(conversation?.map((val) => {
+                    if (val?.conversation && (val?.conversation?.id === convParti?.conversation?.id)) {
+                        val.conversation.messages = [response]
+                    }
+                    return val;
+                }))
+            }
             setMsg("");
         } catch (error) {
             console.error("Error sending message:", error);

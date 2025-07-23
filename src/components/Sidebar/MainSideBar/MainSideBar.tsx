@@ -16,9 +16,9 @@ function useSidebarWidth() {
 
     useEffect(() => {
         function handleResize() {
-            if (window.innerWidth < 768) setWidth(window.innerWidth); // mobile: full width
-            else if (window.innerWidth < 1024) setWidth(300); // md
-            else setWidth(455); // lg
+            if (window.innerWidth < 768) setWidth(45); // mobile: full width
+            else if (window.innerWidth < 1024) setWidth(40); // md
+            else setWidth(35); // lg
         }
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -43,10 +43,10 @@ const MainSideBar = () => {
             {open ? <motion.div
                 key="left-panel"
                 initial={{ width: 0, opacity: 0 }}
-                animate={{ width: sidebarWidth, opacity: 1 }}
+                animate={{ width: `${sidebarWidth}%`, opacity: 1 }}
                 exit={{ width: 0, opacity: 0 }}
                 transition={{ duration: 0, ease: "easeInOut" }}
-                className="h-screen ml-2 bg-white border-r-[2px] "
+                className="h-screen  bg-white border-r-[2px] "
             >
                 {
                     !contact ? <>
@@ -84,7 +84,7 @@ const MainSideBar = () => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="col-span-7 w-[380px] lg:w-[calc(523px-64px)] border-r-[1px] border-gray-200"
+                    className="col-span-7 w-[45%]  md:w-[40%] xl:w-[30%] border-r-[1px] border-gray-200"
                 >
                     {/* Header */}
                     <Header setOpen={setOpen} />

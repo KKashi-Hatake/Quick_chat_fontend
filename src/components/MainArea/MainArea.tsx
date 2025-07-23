@@ -3,7 +3,6 @@
 
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import SideBar from '../Sidebar/Sidebar'
 import HeroSection from '../HeroSection/HeroSection'
 import { getSocket } from '@/lib/socket.config'
 import { CustomUser } from '@/app/api/auth/[...nextauth]/options'
@@ -12,12 +11,11 @@ import { getConversations } from '@/utils/apis/searchUser'
 import SubSideBar from '../Sidebar/SubSideBar/SubSideBar'
 import MainSideBar from '../Sidebar/MainSideBar/MainSideBar'
 import { Socket } from 'socket.io-client'
-import messageListener from '@/utils/socketListeners/messageListener'
+import ackListener from '@/utils/socketListeners/ackListner'
 
 const MainArea = ({ user }: { user: CustomUser }) => {
     const setUser = useStore(state => state.setUser);
     const prevUser = useStore(state => state.user);
-    const setConversations = useStore(state => state.setConversations);
     const setSocket = useStore(state => state.setSocket);
     const convParti = useStore(state => state.convParti);
     const socketRef = useRef<Socket | null>(null);
@@ -44,7 +42,7 @@ const MainArea = ({ user }: { user: CustomUser }) => {
     useEffect(() => {
         const getConv = async () => {
             const res = await getConversations();
-            setConversations(res);
+            setConversation(res);
         }
         getConv();
     }, [convTrigger])
@@ -56,8 +54,6 @@ const MainArea = ({ user }: { user: CustomUser }) => {
         socketRef.current = socket;
         setSocket(socket);
 
-        messageListener({socket, message, setMessage, messageIds, setMessageIds, setConversation, convParti, conversation});
-        
         const newMessage = (data: any) => {
             console.log("new message triggered", data)
         }
@@ -66,18 +62,17 @@ const MainArea = ({ user }: { user: CustomUser }) => {
             console.log("new conversation triggered", data)
         }
 
-    
+
         socket.on('newMessage', newMessage);
         socket.on('newConv', newConv);
 
 
         return () => {
-            socket?.off("message")
             socket?.off("newMessage")
             socket?.off("newConv")
             socket.close()
         }
-    }, [convParti, message, setMessage, messageIds, setMessageIds, conversation, setConversation]);
+    }, [user.id]);
 
 
     return (

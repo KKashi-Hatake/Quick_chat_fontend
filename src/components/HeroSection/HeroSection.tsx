@@ -7,16 +7,10 @@ import { ConversationParticipantType, StoreType } from '../../../types';
 
 const HeroSection = () => {
   const convParti = useStore((state: StoreType) => state.convParti);
-  // const [participant, setParticipant] = useState<ConversationParticipantType | null>(null)
 
-  // useEffect(() => {
-  //   if (convParti) {
-  //     setParticipant(convParti);
-  //   }
-  // }, [convParti])
 
   return (
-    convParti ? <div className='h-screen md:w-[58%] lg:w-[66%] 2xl:w-full flex flex-col border'>
+    convParti ? <div className='h-screen w-[calc(100vw-45%-64px)]  md:w-[calc(100vw-40%-64px)] xl:w-[calc(100vw-30%-64px)] flex flex-col border'>
       {/* Navbar */}
       <Navbar image={convParti?.image || null} firstName={convParti?.first_name} lastName={convParti?.last_name} />
       {/* Chat Area */}

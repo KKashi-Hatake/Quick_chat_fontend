@@ -13,7 +13,7 @@ const ChatArea = () => {
   const user = useStore((state: StoreType) => state.user);
 
   return (
-    <div className='bg-[url("/assets/chat-bg4.webp")] flex-1 bg-cover bg-no-repeat relative flex'>
+    <div className='bg-[url("/assets/bg.png")] flex-1 bg-cover bg-no-repeat relative flex'>
       {user && <Chats user={user} />}
       <ChatBox />
     </div>

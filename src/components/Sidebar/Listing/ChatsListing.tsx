@@ -66,7 +66,7 @@ const ChatsListing = ({ data, search }: { data: SearchChatsContactsType | Conver
                             <DropdownMenuTrigger className={`absolute top-9 right-[44px] flex`}>
                                 {
                                     data.unreadCount && data.unreadCount > 0 &&
-                                    <p className={`w-fit h-5 p-1 text-center bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-sans transition-all duration-300 delay-50 transform ${isHovered || isDropdownOpen ? '-translate-x-2' : 'translate-x-2'
+                                    <p className={`w-5 h-5 p-1 text-center bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-sans transition-all duration-300 delay-50 transform ${isHovered || isDropdownOpen ? '-translate-x-2' : 'translate-x-2'
                                         }`}>
                                         {data.unreadCount}
                                     </p>

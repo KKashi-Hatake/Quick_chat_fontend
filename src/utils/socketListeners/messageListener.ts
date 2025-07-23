@@ -1,8 +1,10 @@
 import { Socket } from "socket.io-client";
-import { ConversationParticipantType, MessageType, StoreType } from "../../../types";
-import { useStore } from "@/zustand/store";
+import { ConversationParticipantType, MessageType, StoreType, User } from "../../../types";
+
+
 
 type paramsType = {
+    // user: User | null,
     socket: Socket | null;
     message: Map<string, MessageType> | null;
     messageIds: string[] | null;
@@ -13,7 +15,17 @@ type paramsType = {
     conversation: ConversationParticipantType[] | null;
 }
 
-export default function listener({socket, message, setMessage, messageIds, setMessageIds, setConversation, convParti, conversation}: paramsType) {
+export default function messageListener({
+    // user,
+    socket,
+    message,
+    setMessage,
+    messageIds,
+    setMessageIds,
+    setConversation,
+    convParti,
+    conversation
+}: paramsType) {
 
     const messageReadFunc = (data: any) => {
         if (convParti && convParti?.conversation?.id === data.convParti?.conversationId) {
@@ -35,22 +47,32 @@ export default function listener({socket, message, setMessage, messageIds, setMe
             sound.play().catch((err) => {
                 console.warn('Failed to play notification sound:', err);
             });
+            if (socket) {
+                socket.emit('message:delivered', { receiver: data.convParti.id, conversation: data.convParti.conversationId, receiverId: data.convParti.userId });
+            } else {
+                console.log("Socket not found while triggering event to mark message as delivered.")
+            }
+
         }
-        console.log('here1', conversation)
+
         setConversation(conversation?.map((val) => {
-            console.log("here", val?.conversation?.id, data.convParti?.conversationId)
             if (val?.conversation && (val?.conversation?.id === data.convParti?.conversationId)) {
                 val.conversation.messages = [data.message]
             }
             if (!convParti || convParti?.conversation?.id !== data.convParti?.conversationId) {
-                val.unreadCount = (val.unreadCount || 0) + 1;
+                val.unreadCount = (val?.unreadCount || 0) + 1;
             }
             return val;
         }))
     }
 
-    socket && socket.on('message', messageReadFunc)
+    if (socket) {
+        socket.on('message', messageReadFunc)
+    }
 
+    return () => {
+        socket?.off("message")
+    }
 }
 
 

@@ -3,7 +3,7 @@ import { MessageType, StoreType, User } from '../../../../types'
 import convertUTCToIST from '@/utils/helper/ConvertUTCtoIST'
 import { getMessages } from '@/utils/apis/chats';
 import { useStore } from '@/zustand/store';
-import { set } from 'zod';
+import messageListener from '@/utils/socketListeners/messageListener';
 
 const Chats = ({ user }: { user: User }) => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -44,6 +44,9 @@ const Chats = ({ user }: { user: User }) => {
         setLoading(false);
     };
 
+    // useEffect(() => {
+    //     messageListener({ user, socket, message: messages, setMessage: setMessages, messageIds, setMessageIds, setConversation, convParti, conversation });
+    // }, [convParti, messageIds, conversation])
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -77,11 +80,36 @@ const Chats = ({ user }: { user: User }) => {
         }
     }, [messages]); // Runs once on initial render
 
+    useEffect(() => {
+        function markMessageAsRead() {
+            let data = {
+                conversation: convParti?.conversation?.id || "",
+                receiver: convParti?.id || "",
+                userId: user.id || "",
+                receiverId: convParti?.userId || "",
+            }
+            if (!data?.conversation ||
+                !data?.receiver ||
+                !data?.userId ||
+                !data?.receiverId) {
+                console.error('Something went wrong while marking all the unread messages as read.')
+                return;
+            }
+            if (socket) {
+                socket.emit('message:read', data);
+            } else {
+                console.error('Socket not found while marking all the unread messages as read.')
+                return;
+            }
+        }
+        markMessageAsRead();
+    }, [messageIds])
+
     
     return (
         <div
             ref={containerRef}
-            className="-flex-1 w-full overflow-y-auto h-[calc(100vh-130px)] 
+            className="-flex-1 w-full overflow-y-auto mt-[1px] h-[calc(100vh-130px)] 
             [&::-webkit-scrollbar]:w-1
             [&::-webkit-scrollbar-track]:rounded-full
             
@@ -91,32 +119,44 @@ const Chats = ({ user }: { user: User }) => {
             dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
             "
         >
-            {/* 👇 Sentinel: watched by IntersectionObserver */}
             <div ref={topSentinelRef}></div>
             {
-                messageIds && messageIds?.length && messageIds.map((messageId) => {
+                messageIds && messageIds?.length > 0 && messageIds.map((messageId, i) => {
                     let message = null;
-                    if (messages && messages.has(messageId)) message = messages.get(messageId);
+                    if (messages && messages.has(messageId)) { message = messages.get(messageId); }
+
                     return (
-                        message && <div key={message.id} className="flex-1 overflow-y-auto px-8 my-1">
+                        message && <div key={message.id} className="flex-1 overflow-y-auto px-8 mt-[2px]">
                             {/* {messages.map((message) => ( */}
                             <div className={`flex ${message.sender.userId !== user.id ? "justify-end" : "justify-start"}`}>
                                 <div
-                                    className={`relative max-w-xs lg:max-w-md p-1 px-2  ${message.sender.userId !== user.id ? "bg-blue-500 text-white rounded-tl-lg rounded-bl-lg rounded-br-lg" : "bg-white text-gray-800 border border-gray-200 rounded-tr-lg rounded-bl-lg rounded-br-lg"
+                                    className={`relative max-w-xs lg:max-w-md p-1 px-2 leading-[0] ${message.sender.userId !== user.id ? "bg-[#5ebfff] text-black rounded-tl-lg rounded-bl-lg rounded-br-lg" : "bg-white text-gray-800 border border-gray-200 rounded-tr-lg rounded-bl-lg rounded-br-lg"
                                         }`}
                                 >
-                                    {/* Message Text */}
-                                    <p className="text-sm">{message.content}</p>
+                                    <div className='flex'>
 
-                                    {/* Timestamp */}
-                                    <p className={`text-[10px] font-thin text-end  mt-[1px] ${message.sender.userId !== user.id ? "text-green-100" : "text-gray-500"}`}>
-                                        {convertUTCToIST(message.created_at)}
-                                    </p>
+                                        {/* Message Text */}
+                                        <p className="text-sm p-0 relative ">{message.content}
+                                            {/* Timestamp */}
+                                            <span className={`relative bottom-0 right-0 text-xs h-fit text-nowrap -mt-1 font-thin ml-2 text-end flex  justify-end ${message.sender.userId !== user.id ? "text-black" : "text-gray-500"}`}>
+                                                {convertUTCToIST(message.created_at)}
+                                                {
+                                                    message?.sender?.userId === user!.id && <span className='ml-1'>
+                                                        {
+                                                            message?.MessageStatus?.status === 'sent' ?
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5" /></svg> :
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-check-check-icon lucide-check-check ${message?.MessageStatus?.status === "read" && "text-blue-500"}`}><path d="M18 6 7 17l-5-5" /><path d="m22 10-7.5 7.5L13 16" /></svg>
+                                                        }
+                                                    </span>
+                                                }
+                                            </span>
+                                        </p>
+                                    </div>
 
                                     {/* Message Tail/Arrow */}
                                     {message.sender.userId !== user.id ? (
                                         // Right-pointing arrow for sent messages
-                                        <div className="absolute top-0 -right-2 w-0 h-0 border-l-8 border-l-blue-500 border-t-8 border-t-transparent rotate-[90deg]"></div>
+                                        <div className="absolute top-0 -right-2 w-0 h-0 border-l-8 border-l-[#5ebfff] border-t-8 border-t-transparent rotate-[90deg]"></div>
                                     ) : (
                                         // Left-pointing arrow for received messages
                                         <div className="absolute top-0 -left-2 w-0 h-0 border-r-8 border-r-white border-t-8 border-t-transparent rotate-[-90deg]"></div>

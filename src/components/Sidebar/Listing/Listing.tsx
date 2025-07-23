@@ -7,6 +7,8 @@ import { searchChatsContacts } from '@/utils/apis/searchUser'
 import ContactsListing from './ContactsListing'
 import { useStore } from '@/zustand/store'
 import ChatsListing from './ChatsListing'
+import ackListener from '@/utils/socketListeners/ackListner'
+import messageListener from '@/utils/socketListeners/messageListener'
 
 
 
@@ -14,7 +16,15 @@ import ChatsListing from './ChatsListing'
 
 
 const Listing = ({ searchTerm }: { searchTerm: string }) => {
-    const conversations = useStore(state => state.conversations)
+    const socket = useStore(state => state.socket);
+    const user = useStore(state => state.user);
+    const convParti = useStore(state => state.convParti);
+    const setConversation = useStore((state) => state.setConversations);
+    const conversation = useStore((state) => state.conversations);
+    const message = useStore(state => state.message);
+    const setMessage = useStore(state => state.setMessage)
+    const messageIds = useStore(state => state.messageIds);
+    const setMessageIds = useStore(state => state.setMessageIds)
     const [data, setData] = useState<SearchChatsType | null>(null);
 
     useEffect(() => {
@@ -27,6 +37,36 @@ const Listing = ({ searchTerm }: { searchTerm: string }) => {
         }
     }, [searchTerm]);
 
+    useEffect(() => {
+        const removeMessageListener = messageListener({
+            // user, 
+            socket,
+            message,
+            setMessage,
+            messageIds,
+            setMessageIds,
+            setConversation,
+            convParti,
+            conversation
+        });
+
+        const removeAckListener = ackListener({
+            user,
+            socket,
+            message,
+            setMessage,
+            messageIds,
+            setMessageIds,
+            setConversation,
+            convParti,
+            conversation
+        });
+        
+        return () => {
+            removeMessageListener && removeMessageListener();
+            removeAckListener && removeAckListener();
+        };
+    }, [convParti, messageIds, conversation])
 
     return (
         <>
@@ -56,7 +96,7 @@ const Listing = ({ searchTerm }: { searchTerm: string }) => {
 
                 </div> :
                 <div>
-                    {conversations?.length !== 0 && conversations?.map((val: ConversationParticipantType, i) => {
+                    {conversation?.length !== 0 && conversation?.map((val: ConversationParticipantType, i) => {
                         return (
                             <ChatsListing key={i} data={val} search={searchTerm} />
                         )

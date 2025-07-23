@@ -3,6 +3,7 @@ import { sendMessage } from '@/utils/apis/chats'
 import { useStore } from '@/zustand/store'
 import React, { useState } from 'react'
 import { MessageType, StoreType } from '../../../../types'
+import EmojiPicker from 'emoji-picker-react';
 
 const ChatBox = () => {
     const convParti = useStore(store => store.convParti)
@@ -14,6 +15,7 @@ const ChatBox = () => {
     const setMessages = useStore(state => state.setMessage);
     const messageIds = useStore(state => state.messageIds);
     const setMessageIds = useStore(state => state.setMessageIds);
+    const [clicked, setClicked] = useState(false);
 
     const sendMsg = async () => {
         try {
@@ -28,11 +30,11 @@ const ChatBox = () => {
             const response = await sendMessage(payload);
             if (response) {
                 setMessageIds([...(messageIds || []), response.id]);
-                if(messages!==null) {
+                if (messages !== null) {
                     messages.set(response.id, response)
                     setMessages(new Map([...messages]));
-                }else{
-                    let msg:Map<string, MessageType> = new Map();
+                } else {
+                    let msg: Map<string, MessageType> = new Map();
                     msg.set(response.id, response);
                     setMessages(msg);
                 };
@@ -52,15 +54,18 @@ const ChatBox = () => {
 
     return (
         <div className='w-full absolute bottom-3'>
-            <div className='pl-3 grid grid-cols-12 '>
-                <div className='col-span-1 bg-white rounded-l-full flex justify-between px-[6px] items-center '>
+                {
+                    clicked && <EmojiPicker onEmojiClick={(emojiData) => setMsg(prev => prev + emojiData.emoji)} />
+                }
+            <div className='pl-3 flex w-full'>
+                <div className='w-24 bg-white rounded-l-full flex justify-between px-[6px] items-center '>
                     <span className='h-10 w-10 hover:bg-gray-50 rounded-full flex items-center justify-center cursor-pointer'>
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14" /><path d="M12 5v14" />
                             <title>Attach</title>
                         </svg>
                     </span>
                     <span className='h-10 w-10 hover:bg-gray-50 rounded-full flex items-center justify-center cursor-pointer'>
-                        < svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" fill="none" >
+                        < svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" fill="none" onClick={()=>setClicked(prev=>!prev)}>
                             <title>expressions</title>
                             <path d="M8.49893 10.2521C9.32736 10.2521 9.99893 9.5805 9.99893 8.75208C9.99893 7.92365 9.32736 7.25208 8.49893 7.25208C7.6705 7.25208 6.99893 7.92365 6.99893 8.75208C6.99893 9.5805 7.6705 10.2521 8.49893 10.2521Z" fill="currentColor"></path>
                             <path d="M17.0011 8.75208C17.0011 9.5805 16.3295 10.2521 15.5011 10.2521C14.6726 10.2521 14.0011 9.5805 14.0011 8.75208C14.0011 7.92365 14.6726 7.25208 15.5011 7.25208C16.3295 7.25208 17.0011 7.92365 17.0011 8.75208Z" fill="currentColor"></path>
@@ -68,8 +73,8 @@ const ChatBox = () => {
                         </svg >
                     </span>
                 </div>
-                <div className='col-span-11 grid grid-cols-12 mr-2'>
-                    <input className=' col-span-11 h-12 focus-visible:ring-0 border-0 outline-0 active:border-0 active:outline-0 ' placeholder='Type a message' value={msg} onChange={(e) => setMsg(e.target.value)} onKeyDown={(e) => {
+                <div className=' w-full flex mr-2'>
+                    <input className=' w-full h-12 focus-visible:ring-0 border-0 outline-0 active:border-0 active:outline-0 ' placeholder='Type a message' value={msg} onChange={(e) => setMsg(e.target.value)} onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                             sendMsg();
                         }

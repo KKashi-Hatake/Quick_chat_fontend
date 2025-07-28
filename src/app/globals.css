@@ -135,3 +135,9 @@
   scrollbar-width: none;
   /* Firefox */
 }
+
+
+.emoji-font {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', 'Android Emoji', 'EmojiSymbols', sans-serif;
+  font-size: 1.25em; /* Adjust as needed */
+}

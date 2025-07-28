@@ -18,7 +18,7 @@ function useSidebarWidth() {
         function handleResize() {
             if (window.innerWidth < 768) setWidth(45); // mobile: full width
             else if (window.innerWidth < 1024) setWidth(40); // md
-            else setWidth(35); // lg
+            else setWidth(30); // lg
         }
         handleResize();
         window.addEventListener('resize', handleResize);

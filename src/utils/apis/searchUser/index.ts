@@ -11,7 +11,7 @@ export const searchUser = async (payload: string) => {
     try {
         const res: searchUserType = await api.get(`/api/v1/user/search?search=${payload}`);
         if (res?.data?.success) {
-            return res?.data?.user;
+            return {user:res?.data?.user, convParti:res?.data?.convParti};
         } else {
             toast(res?.data?.message)
             return null

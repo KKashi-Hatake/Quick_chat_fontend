@@ -8,7 +8,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
     async (config) => {
-        const session: CustomSession | null = await getSession();
+        const session: CustomSession | null = await getSession() as CustomSession;
 
         if (session?.user?.token) {
             config.headers.Authorization = `${session.user?.token}`;

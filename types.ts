@@ -35,6 +35,7 @@ export type searchUserType = {
         success: boolean,
         message: string,
         user: string,
+        convParti: ConversationParticipantType,
     }
 }
 

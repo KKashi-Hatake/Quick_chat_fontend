@@ -92,7 +92,7 @@ const Chats = ({ user }: { user: User }) => {
                 !data?.receiver ||
                 !data?.userId ||
                 !data?.receiverId) {
-                console.error('Something went wrong while marking all the unread messages as read.')
+                console.log('Something went wrong while marking all the unread messages as read.')
                 return;
             }
             if (socket) {
@@ -105,11 +105,11 @@ const Chats = ({ user }: { user: User }) => {
         markMessageAsRead();
     }, [messageIds])
 
-    
+
     return (
         <div
             ref={containerRef}
-            className="-flex-1 w-full overflow-y-auto mt-[1px] h-[calc(100vh-130px)] 
+            className="-flex-1 w-full overflow-y-auto mt-[1px] max-h-[calc(100vh-130px)] absolute bottom-16 
             [&::-webkit-scrollbar]:w-1
             [&::-webkit-scrollbar-track]:rounded-full
             
@@ -127,7 +127,6 @@ const Chats = ({ user }: { user: User }) => {
 
                     return (
                         message && <div key={message.id} className="flex-1 overflow-y-auto px-8 mt-[2px]">
-                            {/* {messages.map((message) => ( */}
                             <div className={`flex ${message.sender.userId !== user.id ? "justify-end" : "justify-start"}`}>
                                 <div
                                     className={`relative max-w-xs lg:max-w-md p-1 px-2 leading-[0] ${message.sender.userId !== user.id ? "bg-[#5ebfff] text-black rounded-tl-lg rounded-bl-lg rounded-br-lg" : "bg-white text-gray-800 border border-gray-200 rounded-tr-lg rounded-bl-lg rounded-br-lg"
@@ -136,9 +135,9 @@ const Chats = ({ user }: { user: User }) => {
                                     <div className='flex'>
 
                                         {/* Message Text */}
-                                        <p className="text-sm p-0 relative ">{message.content}
+                                        <p className="text-sm p-0 font-normal relative ">{message.content}
                                             {/* Timestamp */}
-                                            <span className={`relative bottom-0 right-0 text-xs h-fit text-nowrap -mt-1 font-thin ml-2 text-end flex  justify-end ${message.sender.userId !== user.id ? "text-black" : "text-gray-500"}`}>
+                                            <span className={`relative bottom-0 right-0 text-xs h-fit text-nowrap font-thin ml-2 text-end flex  justify-end ${message.sender.userId !== user.id ? "text-black" : "text-gray-500"}`}>
                                                 {convertUTCToIST(message.created_at)}
                                                 {
                                                     message?.sender?.userId === user!.id && <span className='ml-1'>
@@ -164,11 +163,11 @@ const Chats = ({ user }: { user: User }) => {
                                 </div>
                                 <div></div>
                             </div>
-                            {/* ))} */}
                         </div>
                     )
                 })
-            }</div>
+            }
+        </div>
     )
 }
 

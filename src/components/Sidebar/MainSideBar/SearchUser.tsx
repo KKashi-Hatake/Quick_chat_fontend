@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { createConversationPaticipant, searchUser } from '@/utils/apis/searchUser'
 import { toast } from 'sonner'
-import { StoreType, User } from '../../../../types'
+import { ConversationParticipantType, StoreType, User } from '../../../../types'
 import Image from 'next/image'
 import { useStore } from '@/zustand/store'
 
@@ -34,7 +34,7 @@ type FormData = z.infer<typeof FormSchema>;
 
 const SearchUser = ({ setOpen, setContact }: { setOpen: Dispatch<SetStateAction<boolean>>, setContact: Dispatch<SetStateAction<boolean>> }) => {
     const setParticipant = useStore((state: StoreType) => state.setConvParti);
-    const [user, setUser] = useState<string | null>(null);
+    const [user, setUser] = useState<{ user: string, convParti: ConversationParticipantType | null } | null>(null);
     const {
         register,
         handleSubmit,
@@ -79,7 +79,7 @@ const SearchUser = ({ setOpen, setContact }: { setOpen: Dispatch<SetStateAction<
             return toast("Searched user not found");
         }
         const payload = {
-            id: user,
+            id: user.user,
             firstName,
             lastName,
         }
@@ -145,19 +145,23 @@ const SearchUser = ({ setOpen, setContact }: { setOpen: Dispatch<SetStateAction<
                             <input id="mobile" type="text" maxLength={10} placeholder="Enter 10-digit mobile number" className='peer w-full h-full border-none outline-none ring-none focus:ring-0'
                                 {...register("mobile")} />
                             {
-                                user && <span className='w-fit h-full py-auto mr-2'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-icon lucide-check text-blue-600 peer-focus:border-blue-500"><path d="M20 6 9 17l-5-5" /></svg></span>
+                                user &&
+                                <span className='w-fit h-full py-auto mr-2'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-icon lucide-check text-blue-600 peer-focus:border-blue-500"><path d="M20 6 9 17l-5-5" /></svg></span>
+
                             }
                         </div>
                     </div>
                 </div>
                 {
-                    user as User | null !== null ?
-                        <p className='ml-14 mt-5 text-sm text-gray-400'>This phone number is on Quick chat</p> :
-                        (errors.mobile && mobileValue) && (
-                            <p className="ml-14 mt-5 text-sm text-gray-400">{errors.mobile.message}</p>
-                        )
+                    user?.convParti?.id ?
+                        <p className='ml-14 mt-5 text-sm text-gray-400'>You already have this person in your contact list.</p> :
+                        user as User | null !== null ?
+                            <p className='ml-14 mt-5 text-sm text-gray-400'>This phone number is on Quick chat</p> :
+                            (errors.mobile && mobileValue) && (
+                                <p className="ml-14 mt-5 text-sm text-gray-400">{errors.mobile.message}</p>
+                            )
                 }
-                {user && (firstName || lastName) && <Button variant="ghost" type='submit' className='h-12 w-12 rounded-full absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white bg-blue-600 hover:bg-blue-600 hover:text-white '>
+                {user && !user?.convParti?.id && (firstName || lastName) && <Button variant="ghost" type='submit' className='h-12 w-12 rounded-full absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white bg-blue-600 hover:bg-blue-600 hover:text-white '>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 lucide lucide-check-icon lucide-check  "><path d="M20 6 9 17l-5-5" /></svg>
                 </Button>}
             </form>

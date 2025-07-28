@@ -54,21 +54,21 @@ const MainArea = ({ user }: { user: CustomUser }) => {
         socketRef.current = socket;
         setSocket(socket);
 
-        const newMessage = (data: any) => {
-            console.log("new message triggered", data)
-        }
         const newConv = (data: any) => {
             setConvTrigger(!convTrigger);
-            console.log("new conversation triggered", data)
+            if (socket) {
+                socket.emit('message:delivered', { receiver: data.convParti.id, conversation: data.convParti.conversationId, receiverId: data.convParti.userId });
+            } else {
+                console.log("Socket not found while triggering event to mark message as delivered.")
+            }
         }
 
 
-        socket.on('newMessage', newMessage);
+
         socket.on('newConv', newConv);
 
 
         return () => {
-            socket?.off("newMessage")
             socket?.off("newConv")
             socket.close()
         }

@@ -29,7 +29,7 @@ export default function ackListener({
     const messageReadBatch = (data: { convId: string }) => {
         const { convId = "" } = data;
         if (convParti && convId && messageIds) {
-            if (convParti?.conversation?.id === convId) {
+            if (convParti?.conversation?.id === convId || convParti?.conversationId === convId) {
                 let tempMap: Map<string, MessageType> | null = new Map(message);
                 messageIds.forEach((val, i) => {
                     let msg = tempMap?.get(val) || null;
@@ -63,7 +63,7 @@ export default function ackListener({
     const messageDelivered = (data: { id?: string, convId?: string }) => {
         const { convId = "" } = data;
         if (convParti && convId && messageIds) {
-            if (convParti?.conversation?.id === convId) {
+            if (convParti?.conversation?.id === convId || convParti?.conversationId === convId) {
                 let tempMap: Map<string, MessageType> | null = new Map(message);
                 messageIds.forEach((val, i) => {
                     let msg = tempMap?.get(val) || null;

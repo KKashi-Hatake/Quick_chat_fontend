@@ -1,26 +1,37 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useStore } from '@/zustand/store'
 import React from 'react'
+import { StoreType } from '../../../../types'
 
 
 
-const data = {
-  profilePic: "https://github.com/shadcn.png",
-  name: "Ritesh Mishra"
+type props = {
+  image?: string | null,
+  firstName?: string | null,
+  lastName?: string | null
 }
 
 
+const Navbar = ({ image, firstName, lastName }: props) => {
+  const setParticipant = useStore((state: StoreType) => state.setConvParti);
 
-const Navbar = () => {
+  const handleClick = () => {
+    setParticipant(null)
+  }
   return (
-    <section className='h-16 flex items-center justify-between'>
-      <div className="w-fit flex items-center h-full p-4 cursor-pointer">
-        <Avatar className='h-9 w-9'>
-          <AvatarImage src={data?.profilePic} />
+    <section className='w-full h-16 flex items-center justify-between'>
+      <div className="w-full flex items-center h-full p-4 cursor-pointer">
+        {image ? <Avatar className='h-9 w-9'>
+          <AvatarImage src={image} />
           <AvatarFallback>DP</AvatarFallback>
-        </Avatar>
+        </Avatar> :
+          <div className='w-10 h-10  grid place-content-center bg-gray-200 rounded-full'>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user-round-icon lucide-user-round "><circle cx="12" cy="8" r="5" /><path d="M20 21a8 8 0 0 0-16 0" /></svg>
+          </div>
+        }
         <span className='ml-5 '>
-          <p className=''>{data?.name}</p>
+          <p className=''>{`${firstName || ""} ${lastName || ""}`}</p>
           <p className='text-xs text-gray-500 font-light'>click here for contact info</p>
         </span>
       </div>
@@ -33,13 +44,9 @@ const Navbar = () => {
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search-icon lucide-search "><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg>
         </span>
         <span className='h-8 w-8 hover:bg-gray-100 rounded-full flex justify-center items-center'>
-          {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ellipsis-vertical-icon lucide-ellipsis-vertical "><circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" /></svg> */}
 
 
           <div className='w-20 flex justify-between'>
-            {/* <div className='h-8 w-8 hover:bg-gray-200 flex justify-center items-center rounded-full'>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-square-plus-icon lucide-message-square-plus"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M12 7v6" /><path d="M9 10h6" /></svg>
-            </div> */}
             <DropdownMenu >
               <DropdownMenuTrigger>
                 <div className={`h-8 w-8 hover:bg-gray-200 flex justify-center items-center rounded-full `}>
@@ -71,7 +78,7 @@ const Navbar = () => {
                     <p className='col-span-4 text-sm'>Disappearing messages</p>
                   </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem className='h-9 px-4 text-[#484a4d] font-light mt-1'>
+                <DropdownMenuItem className='h-9 px-4 text-[#484a4d] font-light mt-1 ' onClick={handleClick}>
                   <div className='w-full grid grid-cols-5 text-base font-normal items-center'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-x-icon lucide-circle-x"><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg>
                     <p className='col-span-4 text-sm'>Close chat</p>
@@ -92,7 +99,7 @@ const Navbar = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem className='h-9 px-4 text-[#676d76] font-thin'>
                   <div className='w-full grid grid-cols-5 text-base font-normal items-center'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-slash-icon lucide-circle-slash"><circle cx="12" cy="12" r="10"/><line x1="9" x2="15" y1="15" y2="9"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-slash-icon lucide-circle-slash"><circle cx="12" cy="12" r="10" /><line x1="9" x2="15" y1="15" y2="9" /></svg>
                     <p className='col-span-4 text-sm'>Clear chat</p>
                   </div>
                 </DropdownMenuItem>

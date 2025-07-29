@@ -5,7 +5,7 @@ import MainSideBar from './MainSideBar/MainSideBar';
 
 const SideBar = () => {
   return (
-    <div className='h-screen w-[525px] col-span-1 border-r-[1px] grid grid-cols-8'>
+    <div className='h-screen w-[400px] lg:w-fit col-span-1 grid grid-cols-8'>
       <SubSideBar />
       {/* main side bar */}
       <MainSideBar />

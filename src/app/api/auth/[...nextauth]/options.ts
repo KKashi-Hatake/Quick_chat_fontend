@@ -1,4 +1,4 @@
-import { Account, AuthOptions, ISODateString } from "next-auth";
+import { Account, AuthOptions, ISODateString, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import axios from 'axios';
@@ -13,11 +13,12 @@ export interface CustomSession {
 }
 
 export interface CustomUser {
-  id?: string | null
-  name?: string | null
-  email?: string | null
-  image?: string | null
-  provider?: string | null
+  id: string
+  name: string
+  email: string
+  image: string | null
+  phone: string
+  about: string
   token?: string | null
 }
 
@@ -29,7 +30,7 @@ export const authOptions: AuthOptions = {
     signIn: '/login'
   },
   callbacks: {
-    async session({ session, user, token }: { session: CustomSession, user: CustomUser, token: JWT }) {
+    async session({ session, token }: { session: Session, token: JWT }) {
       session.user = token.user as CustomUser
       return session
     },

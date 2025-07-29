@@ -10,6 +10,9 @@ import { useForm } from "react-hook-form"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { authOptions, CustomSession } from "@/app/api/auth/[...nextauth]/options"
+import { getServerSession } from "next-auth"
+import { useEffect } from "react"
 
 
 
@@ -29,10 +32,10 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
-export function LoginForm({
-    className,
-    ...props
-}: React.ComponentPropsWithoutRef<"form">) {
+export function LoginForm(
+    { session }: { session: CustomSession | null }
+) {
+
     const router = useRouter();
     const {
         register,
@@ -43,7 +46,6 @@ export function LoginForm({
     })
 
     const onSubmit = async (data: FormData) => {
-        console.log("Form Data:", data)
         const res = await signIn("credentials", {
             redirect: false,
             ...data,
@@ -61,7 +63,7 @@ export function LoginForm({
     }
 
     return (
-        <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit(onSubmit)} {...props}>
+        <form className={cn("flex flex-col gap-6")} onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Login to your account</h1>
                 <p className="text-balance text-sm text-muted-foreground">

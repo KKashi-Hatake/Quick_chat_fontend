@@ -70,7 +70,7 @@ export const getConversations = async () => {
             return null
         }
     } catch (error) {
-        console.log("error while callig search user api", error);
+        console.log("error while callig get all conversations api", error);
         return null
     }
 }

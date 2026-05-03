@@ -15,9 +15,16 @@ type props = {
 
 const Navbar = ({ image, firstName, lastName }: props) => {
   const setParticipant = useStore((state: StoreType) => state.setConvParti);
+  const convParti = useStore((state: StoreType) => state.convParti);
+  const callControls = useStore((state: StoreType) => state.callControls);
 
   const handleClick = () => {
     setParticipant(null)
+  }
+
+  const startVideoCall = async () => {
+    if (!convParti?.userId) return;
+    await callControls.startVideoCall(convParti.userId, convParti.conversationId || undefined);
   }
   return (
     <section className='w-full h-16 flex items-center justify-between'>
@@ -36,7 +43,7 @@ const Navbar = ({ image, firstName, lastName }: props) => {
         </span>
       </div>
       <div className='w-[150px] flex justify-between items-center  mr-6'>
-        <span className='w-[70px] h-10 my-auto flex justify-center hover:bg-gray-100 rounded-3xl '>
+        <span onClick={startVideoCall} className='w-[70px] h-10 my-auto flex justify-center hover:bg-gray-100 rounded-3xl cursor-pointer'>
           <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-video-icon lucide-video my-auto"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" /><rect x="2" y="6" width="14" height="12" rx="2" /></svg>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down-icon lucide-chevron-down my-auto"><path d="m6 9 6 6 6-6" /></svg>
         </span>

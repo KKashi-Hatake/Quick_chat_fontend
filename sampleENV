@@ -5,3 +5,6 @@ NEXTAUTH_SECRET
 
 NEXT_PUBLIC_APP_URL = http://localhost:3000
 NEXT_PUBLIC_BACKEND_URL = http://localhost:5000
+NEXT_PUBLIC_TURN_URL = turn:turn.example.com:3478
+NEXT_PUBLIC_TURN_USERNAME = your_turn_username
+NEXT_PUBLIC_TURN_PASSWORD = your_turn_password

@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client"
+import { VideoCallState } from "./src/types/videoCall"
 
 
 export type User = {
@@ -20,13 +21,40 @@ export type StoreType = {
     socket: Socket | null,
     conversations: ConversationParticipantType[] | null,
     convParti: ConversationParticipantType | null,
+    callState: VideoCallState,
+    callId: string | null,
+    localStream: MediaStream | null,
+    remoteStream: MediaStream | null,
+    isMicMuted: boolean,
+    isCameraOff: boolean,
+    isCallMinimized: boolean,
+    incomingCallerName: string | null,
+    incomingCallerImage: string | null,
+    callControls: {
+        startVideoCall: (targetUserId: string, conversationId?: string) => Promise<void>;
+        acceptIncomingCall: () => Promise<void>;
+        rejectIncomingCall: () => void;
+        endCall: () => void;
+        toggleMic: () => void;
+        toggleCamera: () => void;
+    },
 
     setUser: Function,
     setSocket: Function,
     setMessage: Function,
     setMessageIds: Function,
     setConvParti: Function
-    setConversations: Function
+    setConversations: Function,
+    setCallState: (newCallState: VideoCallState) => void,
+    setCallId: (newCallId: string | null) => void,
+    setLocalStream: (stream: MediaStream | null) => void,
+    setRemoteStream: (stream: MediaStream | null) => void,
+    setMicMuted: (value: boolean) => void,
+    setCameraOff: (value: boolean) => void,
+    setCallMinimized: (value: boolean) => void,
+    setIncomingCaller: (name: string | null, image: string | null) => void,
+    setCallControls: (controls: StoreType["callControls"]) => void,
+    resetCallRuntime: () => void
 }
 
 

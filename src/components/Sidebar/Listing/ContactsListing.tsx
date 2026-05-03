@@ -15,9 +15,11 @@ import { useStore } from '@/zustand/store';
 
 const ContactsListing = ({ data, search }: { data: SearchChatsContactsType, search: string }) => {
     const setParticipant = useStore((state: StoreType) => state.setConvParti);
+    const setActiveLeftNav = useStore((state: StoreType) => state.setActiveLeftNav);
 
     const handleClick = () => {
         setParticipant(data)
+        setActiveLeftNav("chat")
     }
     
     return (

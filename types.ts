@@ -21,6 +21,7 @@ export type StoreType = {
     socket: Socket | null,
     conversations: ConversationParticipantType[] | null,
     convParti: ConversationParticipantType | null,
+    activeLeftNav: "chat" | "calls",
     callState: VideoCallState,
     callId: string | null,
     localStream: MediaStream | null,
@@ -45,6 +46,7 @@ export type StoreType = {
     setMessageIds: Function,
     setConvParti: Function
     setConversations: Function,
+    setActiveLeftNav: (value: "chat" | "calls") => void,
     setCallState: (newCallState: VideoCallState) => void,
     setCallId: (newCallId: string | null) => void,
     setLocalStream: (stream: MediaStream | null) => void,

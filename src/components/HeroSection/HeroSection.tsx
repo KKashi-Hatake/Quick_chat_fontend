@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar/Navbar'
 import ChatArea from './ChatArea/ChatArea'
+import CallLogs from './CallLogs/CallLogs'
 import { MessageCircle, Search, MoreVertical, Users, MessageSquare, Zap } from "lucide-react"
 import { useStore } from '@/zustand/store';
 import { ConversationParticipantType, StoreType } from '../../../types';
 
 const HeroSection = () => {
   const convParti = useStore((state: StoreType) => state.convParti);
+  const activeLeftNav = useStore((state: StoreType) => state.activeLeftNav);
 
 
   return (
+    activeLeftNav === "calls" ? <CallLogs /> :
     convParti ? <div className='h-screen w-[calc(100vw-45%-64px)]  md:w-[calc(100vw-40%-64px)] xl:w-[calc(100vw-30%-64px)] flex flex-col border'>
       {/* Navbar */}
       <Navbar image={convParti?.image || null} firstName={convParti?.first_name} lastName={convParti?.last_name} />

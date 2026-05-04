@@ -7,6 +7,7 @@ import { VIDEO_CALL_STATES, VideoCallState } from '@/types/videoCall'
 export const useStore = create<StoreType>((set) => ({
     user: null,
     convParti: null,
+    activeLeftNav: "chat",
     conversations: null,
     message: null,
     messageIds: null,
@@ -35,6 +36,7 @@ export const useStore = create<StoreType>((set) => ({
     setConvParti: (newConvParti: ConversationParticipantType) => set({ convParti: newConvParti }),
     setUser: (newUser: User) => set({ user: newUser }),
     setConversations: (newCoversations: ConversationParticipantType[]) => set({ conversations: newCoversations }),
+    setActiveLeftNav: (value: "chat" | "calls") => set({ activeLeftNav: value }),
     setCallState: (newCallState: VideoCallState) => set({ callState: newCallState }),
     setCallId: (newCallId: string | null) => set({ callId: newCallId }),
     setLocalStream: (stream: MediaStream | null) => set({ localStream: stream }),

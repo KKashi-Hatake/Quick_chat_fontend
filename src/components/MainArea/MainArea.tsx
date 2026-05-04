@@ -213,7 +213,7 @@ const MainArea = ({ user }: { user: CustomUser }) => {
 
 
     return (
-        <div className="w-[748px] md:w-full h-full flex">
+        <div className="w-[748px] md:w-full h-screen flex">
             {/* SubSidebar */}
             <SubSideBar />
             {/* main side bar */}

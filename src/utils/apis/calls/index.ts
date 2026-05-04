@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "@/lib/axios";
 
 export type CallHistoryItem = {
     id: string;
@@ -34,9 +35,42 @@ export type CallHistoryItem = {
     } | null;
 };
 
-export const getCallHistory = async (): Promise<CallHistoryItem[]> => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/call/history`, {
-        withCredentials: true,
-    });
-    return response?.data?.data || [];
+export type CallHistoryPage = {
+    data: CallHistoryItem[];
+    nextCursor: string | null;
+    hasMore: boolean;
+};
+
+export const getCallHistory = async (params?: {
+    limit?: number;
+    cursor?: string | null;
+    conversationId?: string;
+}): Promise<CallHistoryPage> => {
+    const limit = params?.limit ?? 20;
+    try {
+        const response = await api.get(`/api/v1/call/history`, {
+            params: {
+                limit,
+                ...(params?.cursor ? { cursor: params.cursor } : {}),
+                ...(params?.conversationId ? { conversationId: params.conversationId } : {}),
+            },
+        });
+        const rows: CallHistoryItem[] = response?.data?.data || [];
+        const derivedHasMore = rows.length >= limit;
+        const nextCursor = derivedHasMore && rows.length > 0 ? rows[rows.length - 1].created_at : null;
+        return {
+            data: rows,
+            hasMore: derivedHasMore,
+            nextCursor,
+        };
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return {
+                data: [],
+                hasMore: false,
+                nextCursor: null,
+            };
+        }
+        throw error;
+    }
 };

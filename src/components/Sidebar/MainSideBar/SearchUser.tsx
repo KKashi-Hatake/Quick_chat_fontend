@@ -34,6 +34,7 @@ type FormData = z.infer<typeof FormSchema>;
 
 const SearchUser = ({ setOpen, setContact }: { setOpen: Dispatch<SetStateAction<boolean>>, setContact: Dispatch<SetStateAction<boolean>> }) => {
     const setParticipant = useStore((state: StoreType) => state.setConvParti);
+    const setActiveLeftNav = useStore((state: StoreType) => state.setActiveLeftNav);
     const [user, setUser] = useState<{ user: string, convParti: ConversationParticipantType | null } | null>(null);
     const {
         register,
@@ -86,6 +87,7 @@ const SearchUser = ({ setOpen, setContact }: { setOpen: Dispatch<SetStateAction<
         try {
             const convParti = await createConversationPaticipant(payload);
             setParticipant(convParti)
+            setActiveLeftNav("chat")
             setOpen(false);
             setContact(false);
         } catch (error) {

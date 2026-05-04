@@ -11,6 +11,7 @@ import { useStore } from '@/zustand/store';
 
 const ChatsListing = ({ data, search }: { data: SearchChatsContactsType | ConversationParticipantType, search: string }) => {
     const setParticipant = useStore((state: StoreType) => state.setConvParti);
+    const setActiveLeftNav = useStore((state: StoreType) => state.setActiveLeftNav);
     const user = useStore((state: StoreType) => state.user);
     let date = localTimeZone(`${data?.conversation?.updated_at}`);
     const [isHovered, setIsHovered] = useState(false)
@@ -19,6 +20,7 @@ const ChatsListing = ({ data, search }: { data: SearchChatsContactsType | Conver
 
     const handleClick = () => {
         setParticipant(data)
+        setActiveLeftNav("chat")
     }
     return (
         <div key={data.id} className='w-full h-[68px] mt-2 px-3 relative group cursor-pointer'
